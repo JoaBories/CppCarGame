@@ -18,4 +18,6 @@ void Engine::Update()
 
 void Engine::Draw()
 {
+	Tile tile = Tile();
+	tile.Draw();
 }

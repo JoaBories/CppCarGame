@@ -17,6 +17,8 @@ Color backgroundColor = BLACK;
 
 const char* gameName = "CarGame";
 
+AssetBank* assetBank = nullptr;
+
 
 int main() {
 
@@ -35,6 +37,8 @@ void Init()
 {
     InitWindow(screenHeight, screenWidth, gameName);
     SetTargetFPS(60);
+
+    assetBank = new AssetBank();
 
     engine.Init();
 }

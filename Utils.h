@@ -35,10 +35,9 @@ public:
 	static Vector2 Vector2Lerp(Vector2 a, Vector2 b, float t);
 	static Color ColorLerp(Color a, Color b, float t);
 	static float Sign(float value);
-
 	static int RandInt(int min, int max);
 
-	//Draw functions
+	//Ray functions
 	static void DrawTextCentered(string text, Vector2 position, int fontSize);
 };
 

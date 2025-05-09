@@ -1,8 +1,6 @@
 #pragma once
 #include <string>
-
-using std::string;
-
+#include "Tilemap.h"
 
 class Engine
 {
