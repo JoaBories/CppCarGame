@@ -12,14 +12,15 @@ enum SurfacingType
 class Tile
 {
 private :
-	SurfacingType mSurfacingType;
-	TileLayer mLayer0; // 0,1,0 -> grass
-	TileLayer mLayer1; // 1,i,r -> sand with an index and a rotation
-	TileLayer mLayer2; // 2,i,r -> road with an index and a rotation
+	
 
 	void DrawLayer(Rectangle rect, TileLayer layer) const;
 
 public :
+	SurfacingType mSurfacingType;
+	TileLayer mLayer0; // 0,1,0 -> grass
+	TileLayer mLayer1; // 1,i,r -> sand with an index and a rotation
+	TileLayer mLayer2; // 2,i,r -> road with an index and a rotation
 	Tile();
 	~Tile();
 	Tile(SurfacingType surface, TileLayer l0, TileLayer l1, TileLayer l2);

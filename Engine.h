@@ -5,6 +5,7 @@
 class Engine
 {
 private :
+	Tilemap mTilemap;
 
 public :
 	Engine();

@@ -10,8 +10,8 @@ void Draw();
 
 Engine engine;
 
-int screenHeight = 1280;
-int screenWidth = 720;
+int screenHeight = 720;
+int screenWidth = 1280;
 
 Color backgroundColor = BLACK;
 
@@ -35,7 +35,7 @@ int main() {
 
 void Init()
 {
-    InitWindow(screenHeight, screenWidth, gameName);
+    InitWindow(screenWidth, screenHeight, gameName);
     SetTargetFPS(60);
 
     assetBank = new AssetBank();

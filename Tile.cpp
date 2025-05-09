@@ -1,12 +1,17 @@
 #include "Tile.h"
 #include <string>
+#include "Utils.h"
 
 using std::string;
 using std::to_string;
 
 void Tile::DrawLayer(Rectangle rect, TileLayer layer) const
 {
-	DrawTextureRec(*AssetBank::GetInstance()->GetTileLayerTexture(layer), rect, {rect.x, rect.y}, WHITE);
+	if (layer.index == 0) return;
+	
+	TileLayer assetLayer = { layer.type, layer.index, 0 };
+	Texture* text = AssetBank::GetInstance()->GetTileLayerTexture(assetLayer);
+	DrawTexturePro(*text, {0,0,(float) text->width,(float) text->height}, rect, {rect.width * 0.5f, rect.height * 0.5f }, layer.rotation, WHITE);
 }
 
 Tile::Tile() :
