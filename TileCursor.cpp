@@ -36,11 +36,11 @@ TileCursor::TileCursor(int maxRow, int maxCol, Vector2 size, Tilemap* mTilemap) 
 	mTileTexture = new Texture(LoadTextureFromImage(img));
 	UnloadImage(img);
 
-	img = LoadImage("resources/img/cursor.png");
+	img = LoadImage("resources/img/start.png");
 	mStartTexture = new Texture(LoadTextureFromImage(img));
 	UnloadImage(img);
 
-	img = LoadImage("resources/img/cursor.png");
+	img = LoadImage("resources/img/checkpoint.png");
 	mCheckpointTexture = new Texture(LoadTextureFromImage(img));
 	UnloadImage(img);
 
@@ -99,10 +99,29 @@ void TileCursor::Update()
 		break;
 
 	case Start:
+		if (IsKeyPressed(KEY_R))
+		{
+			mRotation += 90;
+
+			if (mRotation == 360)
+			{
+				mRotation = 0;
+			}
+		}
 
 		break;
 
 	case Checkpoint:
+		if (IsKeyPressed(KEY_R))
+		{
+			mRotation += 90;
+
+			if (mRotation == 360)
+			{
+				mRotation = 0;
+			}
+		}
+
 		break;
 
 	case Obstacle:
@@ -116,18 +135,22 @@ void TileCursor::Update()
 		{
 		case Tiles:
 			mType = Start;
+			mRotation = 0;
 			break;
 
 		case Start:
 			mType = Checkpoint;
+			mRotation = 0;
 			break;
 
 		case Checkpoint:
 			mType = Obstacle;
+			mRotation = 0;
 			break;
 
 		case Obstacle:
 			mType = Tiles;
+			mRotation = 0;
 			//change engine type
 			break;
 		}
@@ -145,23 +168,27 @@ void TileCursor::Draw() const
 	switch (mType)
 	{
 	case Tiles:
-		text = mTileTexture;
+
+
 		break;
 
 	case Start:
 		text = mStartTexture;
+		rect = { pos.x - mSize.x / 2, pos.y - mSize.y / 2, mSize.x, mSize.y*3 };
 		break;
 
 	case Checkpoint:
 		text = mCheckpointTexture;
+		rect = { pos.x - mSize.x / 2, pos.y - mSize.y / 2, mSize.x, mSize.y*3 };
 		break;
 
 	case Obstacle:
 		text = mObstacleTexture;
+
 		break;
 	}
 
-	DrawTexturePro(*text, { 0,0,(float)text->width,(float)text->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, 0, WHITE);
+	DrawTexturePro(*text, { 0,0,(float)text->width,(float)text->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, mRotation, WHITE);
 }
 
 int TileCursor::GetRowIndex() const

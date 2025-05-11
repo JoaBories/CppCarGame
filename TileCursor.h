@@ -18,6 +18,7 @@ private:
 	int mColIndex;
 	int mRowMax;
 	int mColMax;
+	int mRotation;
 	Vector2 mSize;
 	CursorType mType;
 	Tilemap* mTilemap;
