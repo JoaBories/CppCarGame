@@ -2,6 +2,7 @@
 #include <string>
 #include "Tilemap.h"
 #include "TileCursor.h"
+#include "TrackObjects.h"
 
 enum GameState
 {
@@ -15,6 +16,7 @@ class Engine
 private :
 	Tilemap mTilemap;
 	TileCursor mTileCursor;
+	TrackObjects mTrackObjects;
 
 public :
 	Engine();

@@ -1,13 +1,14 @@
 #pragma once
 #include "raylib.h"
 #include "Tilemap.h"
+#include "TrackObjects.h"
 
 enum CursorType
 {
-	Tiles,
-	Start,
-	Checkpoint,
-	Obstacle
+	SetTiles,
+	SetStart,
+	SetCheckpoint,
+	SetObstacles
 };
 
 
@@ -20,8 +21,12 @@ private:
 	int mColMax;
 	int mRotation;
 	Vector2 mSize;
+
 	CursorType mType;
+
 	Tilemap* mTilemap;
+	TrackObjects* mTrackObjects;
+
 	Texture *mTileTexture;
 	Texture *mStartTexture;
 	Texture *mCheckpointTexture;
@@ -30,7 +35,7 @@ private:
 public:
 	TileCursor();
 	~TileCursor();
-	TileCursor(int maxRow, int maxCol, Vector2 size, Tilemap* mTilemap);
+	TileCursor(int maxRow, int maxCol, Vector2 size, Tilemap* tilemap, TrackObjects* trackObjects);
 
 	void Update();
 	void Draw() const;

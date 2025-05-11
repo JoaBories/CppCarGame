@@ -5,9 +5,11 @@ TileCursor::TileCursor() :
 	mColIndex{ 0 },
 	mRowMax{ 0 },
 	mColMax{ 0 },
+	mRotation{ 0 },
 	mSize{ 0, 0 },
-	mType{ Tiles },
+	mType{ SetTiles },
 	mTilemap{ nullptr },
+	mTrackObjects{ nullptr },
 	mTileTexture{ nullptr },
 	mStartTexture{ nullptr },
 	mCheckpointTexture{ nullptr },
@@ -19,14 +21,16 @@ TileCursor::~TileCursor()
 {
 }
 
-TileCursor::TileCursor(int maxRow, int maxCol, Vector2 size, Tilemap* mTilemap) :
+TileCursor::TileCursor(int maxRow, int maxCol, Vector2 size, Tilemap* mTilemap, TrackObjects* trackObjects) :
 	mRowIndex{ 0 },
 	mColIndex{ 0 },
 	mRowMax{ maxRow },
 	mColMax{ maxCol },
+	mRotation{ 0 },
 	mSize{ size },
-	mType{ Tiles },
+	mType{ SetTiles },
 	mTilemap{ mTilemap },
+	mTrackObjects{ trackObjects },
 	mTileTexture{ nullptr },
 	mStartTexture{ nullptr },
 	mCheckpointTexture{ nullptr },
@@ -70,7 +74,7 @@ void TileCursor::Update()
 
 	switch (mType)
 	{
-	case Tiles:
+	case SetTiles:
 		if (IsKeyPressed(KEY_E))
 		{
 			int index = mTilemap->GetTile(mRowIndex, mColIndex)->GetLayer1Index();
@@ -98,7 +102,7 @@ void TileCursor::Update()
 		}
 		break;
 
-	case Start:
+	case SetStart:
 		if (IsKeyPressed(KEY_R))
 		{
 			mRotation += 90;
@@ -111,7 +115,7 @@ void TileCursor::Update()
 
 		break;
 
-	case Checkpoint:
+	case SetCheckpoint:
 		if (IsKeyPressed(KEY_R))
 		{
 			mRotation += 90;
@@ -124,32 +128,65 @@ void TileCursor::Update()
 
 		break;
 
-	case Obstacle:
+	case SetObstacles:
 		break;
 
 	}
 
 	if (IsKeyPressed(KEY_ENTER))
 	{
+		Vector2 Dir = { 0,0 };
+		Vector2 Size = { 0,0 };
+
+		switch (mRotation)
+		{
+		case 0:
+			Dir = { 1, 0 };
+			Size = { mSize.x, mSize.y * 3 };
+			break;
+
+		case 90:
+			Dir = { 0, 1 };
+			Size = { mSize.x * 3, mSize.y };
+			break;
+
+		case 180:
+			Dir = { -1, 0 };
+			Size = { mSize.x, mSize.y * 3 };
+			break;
+
+		case 270:
+			Dir = { 0, -1 };
+			Size = { mSize.x * 3, mSize.y };
+			break;
+		}
+
 		switch (mType)
 		{
-		case Tiles:
-			mType = Start;
+		case SetTiles:
+			mType = SetStart;
 			mRotation = 0;
 			break;
 
-		case Start:
-			mType = Checkpoint;
+		case SetStart:
+			mType = SetCheckpoint;
+			
+			mTrackObjects->SetStart({ mSize.x * (1 + mColIndex), mSize.y * (1 + mRowIndex) }, Size, Dir);
+
+			mRotation = 0;
+
+			break;
+
+		case SetCheckpoint:
+			mType = SetObstacles;
+
+			mTrackObjects->SetCheckpoint({ mSize.x * (1 + mColIndex), mSize.y * (1 + mRowIndex) }, Size, Dir);
+
 			mRotation = 0;
 			break;
 
-		case Checkpoint:
-			mType = Obstacle;
-			mRotation = 0;
-			break;
-
-		case Obstacle:
-			mType = Tiles;
+		case SetObstacles:
+			mType = SetTiles;
 			mRotation = 0;
 			//change engine type
 			break;
@@ -167,22 +204,22 @@ void TileCursor::Draw() const
 
 	switch (mType)
 	{
-	case Tiles:
+	case SetTiles:
 
 
 		break;
 
-	case Start:
+	case SetStart:
 		text = mStartTexture;
 		rect = { pos.x - mSize.x / 2, pos.y - mSize.y / 2, mSize.x, mSize.y*3 };
 		break;
 
-	case Checkpoint:
+	case SetCheckpoint:
 		text = mCheckpointTexture;
 		rect = { pos.x - mSize.x / 2, pos.y - mSize.y / 2, mSize.x, mSize.y*3 };
 		break;
 
-	case Obstacle:
+	case SetObstacles:
 		text = mObstacleTexture;
 
 		break;

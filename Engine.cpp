@@ -12,7 +12,7 @@ Engine::~Engine()
 void Engine::Init()
 {
 	mTilemap = Tilemap(9, 16);
-	mTileCursor = TileCursor(9, 16, mTilemap.GetTileSize(), &mTilemap);
+	mTileCursor = TileCursor(9, 16, mTilemap.GetTileSize(), &mTilemap, &mTrackObjects);
 }
 
 void Engine::Update()
