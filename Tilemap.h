@@ -18,5 +18,9 @@ public :
 	Tilemap(int rows, int cols);
 
 	void Draw() const;
+
+	Vector2 GetTileSize() const;
+
+	Tile* GetTile(int row, int col) const;
 };
 

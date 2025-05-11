@@ -138,6 +138,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileCursor.cpp" />
     <ClCompile Include="Tilemap.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
@@ -145,6 +146,7 @@
     <ClInclude Include="AssetBank.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileCursor.h" />
     <ClInclude Include="Tilemap.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

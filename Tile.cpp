@@ -17,8 +17,7 @@ void Tile::DrawLayer(Rectangle rect, TileLayer layer) const
 Tile::Tile() :
 	mSurfacingType{ Grass },
 	mLayer0{ 0,1,0 },
-	mLayer1{ 0,0,0 },
-	mLayer2{ 0,0,0 }
+	mLayer1{ 1,0,0 }
 {
 }
 
@@ -26,15 +25,14 @@ Tile::~Tile()
 {
 }
 
-Tile::Tile(SurfacingType surface, TileLayer l0, TileLayer l1, TileLayer l2) :
+Tile::Tile(SurfacingType surface, TileLayer l0) :
 	mSurfacingType{ surface },
-	mLayer0{ l0 },
-	mLayer1{ l1 },
-	mLayer2{ l2 }
+	mLayer0{ 0,1,0 },
+	mLayer1{ l0 }
 {
 }
 
-void Tile::Draw(Vector2 position, Vector2 size) const
+void Tile::DrawLayer0(Vector2 position, Vector2 size) const
 {
 	float xCentered = position.x - size.x / 2;
 	float yCentered = position.y - size.y / 2;
@@ -42,7 +40,35 @@ void Tile::Draw(Vector2 position, Vector2 size) const
 	Rectangle rect = Rectangle{ xCentered, yCentered, size.x, size.y };
 
 	DrawLayer(rect, mLayer0);
+}
+
+void Tile::DrawLayer1(Vector2 position, Vector2 size) const
+{
+	float xCentered = position.x - size.x / 2;
+	float yCentered = position.y - size.y / 2;
+
+	Rectangle rect = Rectangle{ xCentered, yCentered, size.x, size.y };
+
 	DrawLayer(rect, mLayer1);
-	DrawLayer(rect, mLayer2);
+}
+
+int Tile::GetLayer1Index() const
+{
+	return mLayer1.index;
+}
+
+int Tile::GetLayer1Rot() const
+{
+	return mLayer1.rotation;
+}
+
+void Tile::SetLayer1Index(int i)
+{
+	mLayer1.index = i;
+}
+
+void Tile::SetLayer1Rot(int rot)
+{
+	mLayer1.rotation = rot;
 }
 

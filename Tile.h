@@ -6,7 +6,6 @@ enum SurfacingType
 {
 	Grass,
 	Road,
-	Sand,
 };
 
 class Tile
@@ -20,11 +19,17 @@ public :
 	SurfacingType mSurfacingType;
 	TileLayer mLayer0; // 0,1,0 -> grass
 	TileLayer mLayer1; // 1,i,r -> sand with an index and a rotation
-	TileLayer mLayer2; // 2,i,r -> road with an index and a rotation
 	Tile();
 	~Tile();
-	Tile(SurfacingType surface, TileLayer l0, TileLayer l1, TileLayer l2);
+	Tile(SurfacingType surface, TileLayer l0);
 
-	void Draw(Vector2 position, Vector2 size) const;
+	void DrawLayer0(Vector2 position, Vector2 size) const;
+	void DrawLayer1(Vector2 position, Vector2 size) const;
+
+	int GetLayer1Index() const;
+	int GetLayer1Rot() const;
+
+	void SetLayer1Index(int i);
+	void SetLayer1Rot(int rot);
 };
 

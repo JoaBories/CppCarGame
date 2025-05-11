@@ -19,22 +19,20 @@ AssetBank::AssetBank()
     {
         instance = this;
     }
-    
+
+	mErrorTexture = LoadTextureFromSource("resources/img/error.png");
+
     mTileLayers[{0, 1, 0}] = LoadTextureFromSource("resources/img/grass_1.png");
 
-    mTileLayers[{1, 1, 0}] = LoadTextureFromSource("resources/img/sand_1.png");
-    mTileLayers[{1, 2, 0}] = LoadTextureFromSource("resources/img/sand_2.png");
-    mTileLayers[{1, 3, 0}] = LoadTextureFromSource("resources/img/sand_3.png");
-
-    mTileLayers[{2, 1, 0}] = LoadTextureFromSource("resources/img/road_1.png");
-    mTileLayers[{2, 2, 0}] = LoadTextureFromSource("resources/img/road_2.png");
-    mTileLayers[{2, 3, 0}] = LoadTextureFromSource("resources/img/road_3.png");
-    mTileLayers[{2, 4, 0}] = LoadTextureFromSource("resources/img/road_4.png");
-    mTileLayers[{2, 5, 0}] = LoadTextureFromSource("resources/img/road_5.png");
-    mTileLayers[{2, 6, 0}] = LoadTextureFromSource("resources/img/road_6.png");
-    mTileLayers[{2, 7, 0}] = LoadTextureFromSource("resources/img/road_7.png");
-    mTileLayers[{2, 8, 0}] = LoadTextureFromSource("resources/img/road_8.png");
-    mTileLayers[{2, 9, 0}] = LoadTextureFromSource("resources/img/road_9.png");
+    mTileLayers[{1, 1, 0}] = LoadTextureFromSource("resources/img/road_1.png");
+    mTileLayers[{1, 2, 0}] = LoadTextureFromSource("resources/img/road_2.png");
+    mTileLayers[{1, 3, 0}] = LoadTextureFromSource("resources/img/road_3.png");
+    mTileLayers[{1, 4, 0}] = LoadTextureFromSource("resources/img/road_4.png");
+    mTileLayers[{1, 5, 0}] = LoadTextureFromSource("resources/img/road_5.png");
+    mTileLayers[{1, 6, 0}] = LoadTextureFromSource("resources/img/road_6.png");
+    mTileLayers[{1, 7, 0}] = LoadTextureFromSource("resources/img/road_7.png");
+    mTileLayers[{1, 8, 0}] = LoadTextureFromSource("resources/img/road_8.png");
+    mTileLayers[{1, 9, 0}] = LoadTextureFromSource("resources/img/road_9.png");
 }
 
 AssetBank::~AssetBank()
@@ -53,5 +51,10 @@ AssetBank* AssetBank::GetInstance()
 
 Texture* AssetBank::GetTileLayerTexture(TileLayer layer)
 {
+	if (mTileLayers[layer] == nullptr)
+	{
+		return mErrorTexture;
+	}
+
     return mTileLayers[layer];
 }

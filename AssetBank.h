@@ -30,6 +30,7 @@ class AssetBank
 {
 private :
 	map<TileLayer, Texture*> mTileLayers;
+	Texture* mErrorTexture;
 
 	Texture* LoadTextureFromSource(const char* source);
 

@@ -34,7 +34,26 @@ void Tilemap::Draw() const
 		for (size_t c = 0; c < mTiles[r].size(); c++)
 		{
 			Vector2 pos = { mTileSize.x * (1 + c), mTileSize.y * (1 + r)};
-			mTiles[r][c]->Draw(pos, mTileSize);
+			mTiles[r][c]->DrawLayer0(pos, mTileSize);
 		}
 	}
+
+	for (size_t r = 0; r < mTiles.size(); r++)
+	{
+		for (size_t c = 0; c < mTiles[r].size(); c++)
+		{
+			Vector2 pos = { mTileSize.x * (1 + c), mTileSize.y * (1 + r) };
+			mTiles[r][c]->DrawLayer1(pos, mTileSize);
+		}
+	}
+}
+
+Vector2 Tilemap::GetTileSize() const
+{
+	return mTileSize;
+}
+
+Tile* Tilemap::GetTile(int row, int col) const
+{
+	return mTiles[row][col];
 }
