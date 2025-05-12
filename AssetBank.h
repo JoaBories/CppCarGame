@@ -31,6 +31,9 @@ class AssetBank
 private :
 	map<TileLayer, Texture*> mTileLayers;
 	Texture* mErrorTexture;
+	Texture* mStartTexture;
+	Texture* mCheckpointTexture;
+	Texture* mObstacleTexture;
 
 	Texture* LoadTextureFromSource(const char* source);
 
@@ -42,5 +45,9 @@ public :
 	static AssetBank* GetInstance();
 
 	Texture* GetTileLayerTexture(TileLayer layer);
+	Texture* GetErrorTexture() const;
+	Texture* GetStartTexture() const;
+	Texture* GetCheckpointTexture() const;
+	Texture* GetObstacleTexture() const;
 };
 

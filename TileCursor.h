@@ -28,9 +28,6 @@ private:
 	TrackObjects* mTrackObjects;
 
 	Texture *mTileTexture;
-	Texture *mStartTexture;
-	Texture *mCheckpointTexture;
-	Texture *mObstacleTexture;
 
 public:
 	TileCursor();

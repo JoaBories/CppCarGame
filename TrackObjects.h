@@ -6,11 +6,13 @@ using std::vector;
 
 #include "Obstacles.h"
 
+
 struct Checkpoint
 {
 	Vector2 position;
 	Vector2 size;
 	Vector2 direction;
+	int Rotation;
 };
 
 class TrackObjects
@@ -24,14 +26,17 @@ public :
 	TrackObjects();
 	~TrackObjects();
 
-	void Draw() const;
+	void DrawObstacles() const;
 
-	void SetStart(Vector2 position, Vector2 size, Vector2 direction);
-	void SetCheckpoint(Vector2 position, Vector2 size, Vector2 direction);
+	void SetStart(Vector2 position, Vector2 size, Vector2 direction, int rotation);
+	void SetCheckpoint(Vector2 position, Vector2 size, Vector2 direction, int rotation);
 
 	Checkpoint GetStart() const;
 	Checkpoint GetCheckpoint() const;
 
 	vector<Obstacles> GetObstacles() const;
+	void AddObstacle(Obstacles obstacle);
+
+
 };
 

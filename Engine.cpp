@@ -25,4 +25,5 @@ void Engine::Draw()
 {
 	mTilemap.Draw();	
 	mTileCursor.Draw();
+	mTrackObjects.DrawObstacles();
 }

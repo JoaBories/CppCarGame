@@ -10,10 +10,7 @@ TileCursor::TileCursor() :
 	mType{ SetTiles },
 	mTilemap{ nullptr },
 	mTrackObjects{ nullptr },
-	mTileTexture{ nullptr },
-	mStartTexture{ nullptr },
-	mCheckpointTexture{ nullptr },
-	mObstacleTexture{ nullptr }
+	mTileTexture{ nullptr }
 {
 }
 
@@ -31,25 +28,10 @@ TileCursor::TileCursor(int maxRow, int maxCol, Vector2 size, Tilemap* mTilemap, 
 	mType{ SetTiles },
 	mTilemap{ mTilemap },
 	mTrackObjects{ trackObjects },
-	mTileTexture{ nullptr },
-	mStartTexture{ nullptr },
-	mCheckpointTexture{ nullptr },
-	mObstacleTexture{ nullptr }
+	mTileTexture{ nullptr }
 {
 	Image img = LoadImage("resources/img/cursor.png");
 	mTileTexture = new Texture(LoadTextureFromImage(img));
-	UnloadImage(img);
-
-	img = LoadImage("resources/img/start.png");
-	mStartTexture = new Texture(LoadTextureFromImage(img));
-	UnloadImage(img);
-
-	img = LoadImage("resources/img/checkpoint.png");
-	mCheckpointTexture = new Texture(LoadTextureFromImage(img));
-	UnloadImage(img);
-
-	img = LoadImage("resources/img/cursor.png");
-	mObstacleTexture = new Texture(LoadTextureFromImage(img));
 	UnloadImage(img);
 }
 
@@ -70,6 +52,37 @@ void TileCursor::Update()
 	if (IsKeyPressed(KEY_RIGHT) && mColIndex < mColMax - 1)
 	{
 		mColIndex++;
+	}
+
+	Vector2 CheckpointDir = { 0,0 };
+	Vector2 CheckpointSize = { 0,0 };
+	Vector2 ObstacleSize = { 0,0 };
+
+	switch (mRotation)
+	{
+	case 0:
+		CheckpointDir = { 1, 0 };
+		CheckpointSize = { mSize.x, mSize.y * 3 };
+		ObstacleSize = { mSize.x / 3, mSize.y };
+		break;
+
+	case 90:
+		CheckpointDir = { 0, 1 };
+		CheckpointSize = { mSize.x * 3, mSize.y };
+		ObstacleSize = { mSize.x, mSize.y / 3 };
+		break;
+
+	case 180:
+		CheckpointDir = { -1, 0 };
+		CheckpointSize = { mSize.x, mSize.y * 3 };
+		ObstacleSize = { mSize.x / 3, mSize.y };
+		break;
+
+	case 270:
+		CheckpointDir = { 0, -1 };
+		CheckpointSize = { mSize.x * 3, mSize.y };
+		ObstacleSize = { mSize.x, mSize.y / 3 };
+		break;
 	}
 
 	switch (mType)
@@ -113,6 +126,11 @@ void TileCursor::Update()
 			}
 		}
 
+		if (IsKeyPressed(KEY_E))
+		{
+			mTrackObjects->SetStart({ mSize.x * (1 + mColIndex), mSize.y * (1 + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
+		}
+
 		break;
 
 	case SetCheckpoint:
@@ -126,41 +144,35 @@ void TileCursor::Update()
 			}
 		}
 
+		if (IsKeyPressed(KEY_E))
+		{
+			mTrackObjects->SetCheckpoint({ mSize.x * (1 + mColIndex), mSize.y * (1 + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
+		}
+
 		break;
 
 	case SetObstacles:
+		if (IsKeyPressed(KEY_R))
+		{
+			mRotation += 90;
+
+			if (mRotation == 360)
+			{
+				mRotation = 0;
+			}
+		}
+
+		if (IsKeyPressed(KEY_E))
+		{
+			mTrackObjects->AddObstacle(Obstacles({ mSize.x * (1 + mColIndex), mSize.y * (1 + mRowIndex) }, ObstacleSize, mRotation));
+		}
+
 		break;
 
 	}
 
 	if (IsKeyPressed(KEY_ENTER))
 	{
-		Vector2 Dir = { 0,0 };
-		Vector2 Size = { 0,0 };
-
-		switch (mRotation)
-		{
-		case 0:
-			Dir = { 1, 0 };
-			Size = { mSize.x, mSize.y * 3 };
-			break;
-
-		case 90:
-			Dir = { 0, 1 };
-			Size = { mSize.x * 3, mSize.y };
-			break;
-
-		case 180:
-			Dir = { -1, 0 };
-			Size = { mSize.x, mSize.y * 3 };
-			break;
-
-		case 270:
-			Dir = { 0, -1 };
-			Size = { mSize.x * 3, mSize.y };
-			break;
-		}
-
 		switch (mType)
 		{
 		case SetTiles:
@@ -170,18 +182,19 @@ void TileCursor::Update()
 
 		case SetStart:
 			mType = SetCheckpoint;
-			
-			mTrackObjects->SetStart({ mSize.x * (1 + mColIndex), mSize.y * (1 + mRowIndex) }, Size, Dir);
-
+			if (mTrackObjects->GetStart().position.x == 0 && mTrackObjects->GetStart().position.y == 0)
+			{
+				mTrackObjects->SetStart({ mSize.x * (1 + mColIndex), mSize.y * (1 + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
+			}
 			mRotation = 0;
-
 			break;
 
 		case SetCheckpoint:
 			mType = SetObstacles;
-
-			mTrackObjects->SetCheckpoint({ mSize.x * (1 + mColIndex), mSize.y * (1 + mRowIndex) }, Size, Dir);
-
+			if (mTrackObjects->GetCheckpoint().position.x == 0 && mTrackObjects->GetCheckpoint().position.y == 0)
+			{
+				mTrackObjects->SetCheckpoint({ mSize.x * (1 + mColIndex), mSize.y * (1 + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
+			}
 			mRotation = 0;
 			break;
 
@@ -196,11 +209,29 @@ void TileCursor::Update()
 
 void TileCursor::Draw() const
 {
+	Rectangle rect = { 0, 0, 0, 0 };
+	Texture* text = nullptr;
+
+	Checkpoint start = mTrackObjects->GetStart();
+	if (start.position.x != 0 || start.position.y != 0)
+	{
+		rect = { start.position.x - mSize.x / 2, start.position.y - mSize.y / 2, mSize.x, mSize.y * 3 };
+		text = AssetBank::GetInstance()->GetStartTexture();
+		DrawTexturePro(*text, { 0,0,(float)text->width,(float)text->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, start.Rotation, WHITE);
+	}
+
+	Checkpoint checkpoint = mTrackObjects->GetCheckpoint();
+	if (checkpoint.position.x != 0 || checkpoint.position.y != 0)
+	{
+		rect = { checkpoint.position.x - mSize.x / 2, checkpoint.position.y - mSize.y / 2, mSize.x, mSize.y * 3 };
+		text = AssetBank::GetInstance()->GetCheckpointTexture();
+		DrawTexturePro(*text, { 0,0,(float)text->width,(float)text->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, checkpoint.Rotation, WHITE);
+	}
+
+
 	Vector2 pos = { mSize.x * (1 + mColIndex), mSize.y * (1 + mRowIndex) };
-
-	Rectangle rect = { pos.x - mSize.x / 2, pos.y - mSize.y / 2, mSize.x, mSize.y };
-
-	Texture* text = mTileTexture;
+	rect = { pos.x - mSize.x / 2, pos.y - mSize.y / 2, mSize.x, mSize.y };
+	text = mTileTexture;
 
 	switch (mType)
 	{
@@ -210,17 +241,17 @@ void TileCursor::Draw() const
 		break;
 
 	case SetStart:
-		text = mStartTexture;
+		text = AssetBank::GetInstance()->GetStartTexture();
 		rect = { pos.x - mSize.x / 2, pos.y - mSize.y / 2, mSize.x, mSize.y*3 };
 		break;
 
 	case SetCheckpoint:
-		text = mCheckpointTexture;
+		text = AssetBank::GetInstance()->GetCheckpointTexture();
 		rect = { pos.x - mSize.x / 2, pos.y - mSize.y / 2, mSize.x, mSize.y*3 };
 		break;
 
 	case SetObstacles:
-		text = mObstacleTexture;
+		text = AssetBank::GetInstance()->GetObstacleTexture();
 
 		break;
 	}
