@@ -2,26 +2,17 @@
 #include <raylib.h>
 #include "AssetBank.h"
 
-enum SurfacingType
-{
-	Grass,
-	Road,
-};
-
 class Tile
 {
 private :
-	
-
 	void DrawLayer(Rectangle rect, TileLayer layer) const;
 
 public :
-	SurfacingType mSurfacingType;
 	TileLayer mLayer0; // 0,1,0 -> grass
 	TileLayer mLayer1; // 1,i,r -> sand with an index and a rotation
+
 	Tile();
 	~Tile();
-	Tile(SurfacingType surface, TileLayer l0);
 
 	void DrawLayer0(Vector2 position, Vector2 size) const;
 	void DrawLayer1(Vector2 position, Vector2 size) const;

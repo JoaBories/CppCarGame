@@ -1,22 +1,13 @@
 #pragma once
 #include <string>
-#include "Tilemap.h"
+#include "Track.h"
 #include "TileCursor.h"
-#include "TrackObjects.h"
-
-enum GameState
-{
-	Edit,
-	Play,
-};
-
 
 class Engine
 {
 private :
-	Tilemap mTilemap;
-	TileCursor mTileCursor;
-	TrackObjects mTrackObjects;
+	TileCursor* mTileCursor;
+	Track* mTrack;
 
 public :
 	Engine();

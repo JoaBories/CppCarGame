@@ -1,7 +1,5 @@
 #pragma once
-#include "raylib.h"
-#include "Tilemap.h"
-#include "TrackObjects.h"
+#include "Track.h"
 
 enum CursorType
 {
@@ -24,20 +22,25 @@ private:
 
 	CursorType mType;
 
-	Tilemap* mTilemap;
-	TrackObjects* mTrackObjects;
+	Track* mTrack;
 
 	Texture *mTileTexture;
+
+	bool hasSaved;
+
+	bool isTrackValid() const;
 
 public:
 	TileCursor();
 	~TileCursor();
-	TileCursor(int maxRow, int maxCol, Vector2 size, Tilemap* tilemap, TrackObjects* trackObjects);
+	TileCursor(int maxRow, int maxCol, Vector2 size, Track* track);
 
 	void Update();
 	void Draw() const;
 
 	int GetRowIndex() const;
 	int GetColIndex() const;
+
+	void Reset();
 };
 

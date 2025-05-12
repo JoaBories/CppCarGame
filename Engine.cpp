@@ -1,7 +1,8 @@
 #include "Engine.h"
 
 Engine::Engine() :
-	mTilemap{Tilemap()}
+	mTileCursor{ nullptr },
+	mTrack{ nullptr }
 {
 }
 
@@ -11,19 +12,18 @@ Engine::~Engine()
 
 void Engine::Init()
 {
-	mTilemap = Tilemap(9, 16);
-	mTileCursor = TileCursor(9, 16, mTilemap.GetTileSize(), &mTilemap, &mTrackObjects);
+	mTrack = new Track();
+	mTileCursor = new TileCursor(9, 16, mTrack->GetTilemap()->GetTileSize(), mTrack);
 }
 
 void Engine::Update()
 {
-	mTileCursor.Update();
+	mTileCursor->Update();
 
 }
 
 void Engine::Draw()
 {
-	mTilemap.Draw();	
-	mTileCursor.Draw();
-	mTrackObjects.DrawObstacles();
+	mTrack->Draw();
+	mTileCursor->Draw();
 }

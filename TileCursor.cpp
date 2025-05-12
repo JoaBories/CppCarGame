@@ -1,5 +1,18 @@
 #include "TileCursor.h"
 
+bool TileCursor::isTrackValid() const
+{
+	if (mTrack->GetTrackObjects()->GetStart().position.x != 0 || mTrack->GetTrackObjects()->GetStart().position.y != 0) 
+	{
+		if (mTrack->GetTrackObjects()->GetCheckpoint().position.x != 0 || mTrack->GetTrackObjects()->GetCheckpoint().position.y != 0)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 TileCursor::TileCursor() :
 	mRowIndex{ 0 },
 	mColIndex{ 0 },
@@ -8,9 +21,9 @@ TileCursor::TileCursor() :
 	mRotation{ 0 },
 	mSize{ 0, 0 },
 	mType{ SetTiles },
-	mTilemap{ nullptr },
-	mTrackObjects{ nullptr },
-	mTileTexture{ nullptr }
+	mTrack{ nullptr },
+	mTileTexture{ nullptr },
+	hasSaved{ false }
 {
 }
 
@@ -18,7 +31,7 @@ TileCursor::~TileCursor()
 {
 }
 
-TileCursor::TileCursor(int maxRow, int maxCol, Vector2 size, Tilemap* mTilemap, TrackObjects* trackObjects) :
+TileCursor::TileCursor(int maxRow, int maxCol, Vector2 size, Track* track) :
 	mRowIndex{ 0 },
 	mColIndex{ 0 },
 	mRowMax{ maxRow },
@@ -26,9 +39,9 @@ TileCursor::TileCursor(int maxRow, int maxCol, Vector2 size, Tilemap* mTilemap, 
 	mRotation{ 0 },
 	mSize{ size },
 	mType{ SetTiles },
-	mTilemap{ mTilemap },
-	mTrackObjects{ trackObjects },
-	mTileTexture{ nullptr }
+	mTrack{ track },
+	mTileTexture{ nullptr },
+	hasSaved{ false }
 {
 	Image img = LoadImage("resources/img/cursor.png");
 	mTileTexture = new Texture(LoadTextureFromImage(img));
@@ -52,6 +65,12 @@ void TileCursor::Update()
 	if (IsKeyPressed(KEY_RIGHT) && mColIndex < mColMax - 1)
 	{
 		mColIndex++;
+	}
+
+	if (IsKeyPressed(KEY_S) && isTrackValid())
+	{
+		mTrack->SaveTrack();
+		hasSaved = true;
 	}
 
 	Vector2 CheckpointDir = { 0,0 };
@@ -90,7 +109,7 @@ void TileCursor::Update()
 	case SetTiles:
 		if (IsKeyPressed(KEY_E))
 		{
-			int index = mTilemap->GetTile(mRowIndex, mColIndex)->GetLayer1Index();
+			int index = mTrack->GetTilemap()->GetTile(mRowIndex, mColIndex)->GetLayer1Index();
 			index++;
 
 			if (index == 10)
@@ -98,12 +117,12 @@ void TileCursor::Update()
 				index = 0;
 			}
 
-			mTilemap->GetTile(mRowIndex, mColIndex)->SetLayer1Index(index);
+			mTrack->GetTilemap()->GetTile(mRowIndex, mColIndex)->SetLayer1Index(index);
 		}
 
 		if (IsKeyPressed(KEY_R))
 		{
-			int rot = mTilemap->GetTile(mRowIndex, mColIndex)->GetLayer1Rot();
+			int rot = mTrack->GetTilemap()->GetTile(mRowIndex, mColIndex)->GetLayer1Rot();
 			rot += 90;
 
 			if (rot == 360)
@@ -111,7 +130,7 @@ void TileCursor::Update()
 				rot = 0;
 			}
 
-			mTilemap->GetTile(mRowIndex, mColIndex)->SetLayer1Rot(rot);
+			mTrack->GetTilemap()->GetTile(mRowIndex, mColIndex)->SetLayer1Rot(rot);
 		}
 		break;
 
@@ -128,7 +147,7 @@ void TileCursor::Update()
 
 		if (IsKeyPressed(KEY_E))
 		{
-			mTrackObjects->SetStart({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
+			mTrack->GetTrackObjects()->SetStart({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
 		}
 
 		break;
@@ -146,7 +165,7 @@ void TileCursor::Update()
 
 		if (IsKeyPressed(KEY_E))
 		{
-			mTrackObjects->SetCheckpoint({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
+			mTrack->GetTrackObjects()->SetCheckpoint({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
 		}
 
 		break;
@@ -166,7 +185,7 @@ void TileCursor::Update()
 		{
 			bool isSamePos = false;
 			int index = 0;
-			vector<Obstacles> obstacles = mTrackObjects->GetObstacles();
+			vector<Obstacles> obstacles = mTrack->GetTrackObjects()->GetObstacles();
 			for (int i = 0; i < obstacles.size(); i++)
 			{
 				Obstacles obstacle = obstacles[i];
@@ -180,11 +199,11 @@ void TileCursor::Update()
 
 			if (!isSamePos)
 			{
-				mTrackObjects->AddObstacle(Obstacles({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, ObstacleSize, mRotation));
+				mTrack->GetTrackObjects()->AddObstacle(Obstacles({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, ObstacleSize, mRotation));
 			}
 			else
 			{
-				mTrackObjects->RemoveObstacle(index);
+				mTrack->GetTrackObjects()->RemoveObstacle(index);
 			}
 		}
 
@@ -203,18 +222,18 @@ void TileCursor::Update()
 
 		case SetStart:
 			mType = SetCheckpoint;
-			if (mTrackObjects->GetStart().position.x == 0 && mTrackObjects->GetStart().position.y == 0)
+			if (mTrack->GetTrackObjects()->GetStart().position.x == 0 && mTrack->GetTrackObjects()->GetStart().position.y == 0)
 			{
-				mTrackObjects->SetStart({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
+				mTrack->GetTrackObjects()->SetStart({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
 			}
 			mRotation = 0;
 			break;
 
 		case SetCheckpoint:
 			mType = SetObstacles;
-			if (mTrackObjects->GetCheckpoint().position.x == 0 && mTrackObjects->GetCheckpoint().position.y == 0)
+			if (mTrack->GetTrackObjects()->GetCheckpoint().position.x == 0 && mTrack->GetTrackObjects()->GetCheckpoint().position.y == 0)
 			{
-				mTrackObjects->SetCheckpoint({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
+				mTrack->GetTrackObjects()->SetCheckpoint({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
 			}
 			mRotation = 0;
 			break;
@@ -222,7 +241,6 @@ void TileCursor::Update()
 		case SetObstacles:
 			mType = SetTiles;
 			mRotation = 0;
-			//change engine type
 			break;
 		}
 	}
@@ -234,7 +252,7 @@ void TileCursor::Draw() const
 	Texture* text = nullptr;
 
 	//start line
-	Checkpoint start = mTrackObjects->GetStart();
+	Checkpoint start = mTrack->GetTrackObjects()->GetStart();
 	if (start.position.x != 0 || start.position.y != 0)
 	{
 		rect = { start.position.x, start.position.y, mSize.x, mSize.y * 3 };
@@ -243,7 +261,7 @@ void TileCursor::Draw() const
 	}
 
 	//checkpoint
-	Checkpoint checkpoint = mTrackObjects->GetCheckpoint();
+	Checkpoint checkpoint = mTrack->GetTrackObjects()->GetCheckpoint();
 	if (checkpoint.position.x != 0 || checkpoint.position.y != 0)
 	{
 		rect = { checkpoint.position.x, checkpoint.position.y, mSize.x, mSize.y * 3 };
@@ -288,4 +306,13 @@ int TileCursor::GetRowIndex() const
 int TileCursor::GetColIndex() const
 {
 	return mColIndex;
+}
+
+void TileCursor::Reset()
+{
+	mRowIndex = 0;
+	mColIndex = 0;
+	mRotation = 0;
+	mType = SetTiles;
+	hasSaved = false;
 }

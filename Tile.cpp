@@ -15,20 +15,12 @@ void Tile::DrawLayer(Rectangle rect, TileLayer layer) const
 }
 
 Tile::Tile() :
-	mSurfacingType{ Grass },
 	mLayer0{ 0,1,0 },
 	mLayer1{ 1,0,0 }
 {
 }
 
 Tile::~Tile()
-{
-}
-
-Tile::Tile(SurfacingType surface, TileLayer l0) :
-	mSurfacingType{ surface },
-	mLayer0{ 0,1,0 },
-	mLayer1{ l0 }
 {
 }
 

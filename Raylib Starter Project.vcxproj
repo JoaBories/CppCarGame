@@ -141,6 +141,7 @@
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileCursor.cpp" />
     <ClCompile Include="Tilemap.cpp" />
+    <ClCompile Include="Track.cpp" />
     <ClCompile Include="TrackObjects.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
@@ -151,6 +152,7 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileCursor.h" />
     <ClInclude Include="Tilemap.h" />
+    <ClInclude Include="Track.h" />
     <ClInclude Include="TrackObjects.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
