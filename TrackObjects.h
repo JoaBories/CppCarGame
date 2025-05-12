@@ -36,7 +36,6 @@ public :
 
 	vector<Obstacles> GetObstacles() const;
 	void AddObstacle(Obstacles obstacle);
-
-
+	void RemoveObstacle(int index);
 };
 

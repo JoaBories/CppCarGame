@@ -22,13 +22,13 @@ Obstacles::Obstacles(Vector2 position, Vector2 size, int rotation) :
 
 void Obstacles::Draw() const
 {
-	int squarSide = Utils::Max(mSize.x, mSize.y);
-	Rectangle rect{ mPosition.x - squarSide/2, mPosition.y - squarSide/2, squarSide, squarSide };
+	int squareSide = Utils::Max(mSize.x, mSize.y);
+	Rectangle rect1{ mPosition.x, mPosition.y, squareSide, squareSide };
 	Texture* text = AssetBank::GetInstance()->GetObstacleTexture();
-	DrawTexturePro(*text, { 0,0,(float)text->width,(float)text->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, mRotation, WHITE);
+	DrawTexturePro(*text, { 0,0,(float)text->width,(float)text->height }, rect1, { rect1.width * 0.5f, rect1.height * 0.5f }, mRotation, WHITE);
 
-	rect = { mPosition.x - mSize.x *2, mPosition.y - mSize.y, mSize.x, mSize.y }; // need to debug
-	DrawRectangleRec(rect, RED);
+	Rectangle rect2 = { mPosition.x - mSize.x / 2, mPosition.y - mSize.y / 2, mSize.x, mSize.y }; // debug collision
+	DrawRectangleRec(rect2, RED);
 }
 
 Vector2 Obstacles::GetPosition() const

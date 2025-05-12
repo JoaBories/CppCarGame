@@ -15,7 +15,6 @@ TrackObjects::~TrackObjects()
 
 void TrackObjects::DrawObstacles() const
 {
-	cout << "Drawing obstacles..." << endl;
 	for (Obstacles obstacle : mObstacles)
 	{
 		obstacle.Draw();
@@ -58,4 +57,9 @@ void TrackObjects::AddObstacle(Obstacles obstacle)
 	mObstacles.push_back(obstacle);
 	cout << "Obstacle set to: " << obstacle.GetPosition().x << ", " << obstacle.GetPosition().y << endl;
 	cout << "Size set to: " << obstacle.GetSize().x << ", " << obstacle.GetSize().y << endl;
+}
+
+void TrackObjects::RemoveObstacle(int index)
+{
+	mObstacles.erase(mObstacles.begin() + index);
 }

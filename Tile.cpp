@@ -34,20 +34,14 @@ Tile::Tile(SurfacingType surface, TileLayer l0) :
 
 void Tile::DrawLayer0(Vector2 position, Vector2 size) const
 {
-	float xCentered = position.x - size.x / 2;
-	float yCentered = position.y - size.y / 2;
-
-	Rectangle rect = Rectangle{ xCentered, yCentered, size.x, size.y };
+	Rectangle rect = Rectangle{ position.x, position.y, size.x, size.y };
 
 	DrawLayer(rect, mLayer0);
 }
 
 void Tile::DrawLayer1(Vector2 position, Vector2 size) const
 {
-	float xCentered = position.x - size.x / 2;
-	float yCentered = position.y - size.y / 2;
-
-	Rectangle rect = Rectangle{ xCentered, yCentered, size.x, size.y };
+	Rectangle rect = Rectangle{ position.x, position.y, size.x-2, size.y-2 };
 
 	DrawLayer(rect, mLayer1);
 }
