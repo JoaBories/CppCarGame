@@ -41,6 +41,7 @@ public:
 	int GetRowIndex() const;
 	int GetColIndex() const;
 
+	bool HasSaved() const;
 	void Reset();
 };
 

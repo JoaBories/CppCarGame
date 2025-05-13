@@ -308,6 +308,11 @@ int TileCursor::GetColIndex() const
 	return mColIndex;
 }
 
+bool TileCursor::HasSaved() const
+{
+	return hasSaved;
+}
+
 void TileCursor::Reset()
 {
 	mRowIndex = 0;
