@@ -40,3 +40,8 @@ Vector2 Obstacles::GetSize() const
 {
 	return mSize;
 }
+
+int Obstacles::GetRotation() const
+{
+	return mRotation;
+}

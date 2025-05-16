@@ -9,6 +9,8 @@ private :
 	Tilemap* mTilemap;
 	TrackObjects* mTrackObjects;
 
+	string mFileName = "resources/track/01.track";
+
 public :
 	Track();
 	~Track();
@@ -17,6 +19,8 @@ public :
 
 	Tilemap* GetTilemap() const;
 	TrackObjects* GetTrackObjects() const;
+
+	bool IsThereASave() const;
 
 	void SaveTrack() const;
 	void LoadTrack();

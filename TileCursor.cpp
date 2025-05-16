@@ -257,7 +257,7 @@ void TileCursor::Draw() const
 	{
 		rect = { start.position.x, start.position.y, mSize.x, mSize.y * 3 };
 		text = AssetBank::GetInstance()->GetStartTexture();
-		DrawTexturePro(*text, { 0,0,(float)text->width,(float)text->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, start.Rotation, WHITE);
+		DrawTexturePro(*text, { 0,0,(float)text->width,(float)text->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, start.rotation, WHITE);
 	}
 
 	//checkpoint
@@ -266,7 +266,7 @@ void TileCursor::Draw() const
 	{
 		rect = { checkpoint.position.x, checkpoint.position.y, mSize.x, mSize.y * 3 };
 		text = AssetBank::GetInstance()->GetCheckpointTexture();
-		DrawTexturePro(*text, { 0,0,(float)text->width,(float)text->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, checkpoint.Rotation, WHITE);
+		DrawTexturePro(*text, { 0,0,(float)text->width,(float)text->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, checkpoint.rotation, WHITE);
 	}
 
 	//Cursor

@@ -12,7 +12,7 @@ struct Checkpoint
 	Vector2 position;
 	Vector2 size;
 	Vector2 direction;
-	int Rotation;
+	int rotation;
 };
 
 class TrackObjects

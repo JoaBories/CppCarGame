@@ -22,5 +22,8 @@ public :
 	Vector2 GetTileSize() const;
 
 	Tile* GetTile(int row, int col) const;
+
+	int GetRows() const;
+	int GetCols() const;
 };
 

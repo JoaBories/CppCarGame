@@ -25,12 +25,13 @@ void Engine::Update()
 		if (IsKeyPressed(KEY_E))
 		{
 			mGameState = EditorState;
+			mTrack->LoadTrack();
 		}
 
-		//else if (IsKeyPressed(KEY_P) && has save)
-		//{
-		//	mGameState = RaceState;
-		//}
+		else if (IsKeyPressed(KEY_P) && mTrack->IsThereASave())
+		{
+			mGameState = RaceState;
+		}
 		break;
 
 	case EditorState:
@@ -59,8 +60,10 @@ void Engine::Draw()
 	case StartState:
 		Utils::DrawTextCentered("Mini Car Race", { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 3 }, 20);
 		
-		// if track has a save
-		// DrawText Play
+		if (mTrack->IsThereASave())
+		{
+			Utils::DrawTextCentered("Play - P", { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 2 }, 20);
+		}
 		
 		Utils::DrawTextCentered("Track Editor - E", { (float)GetScreenWidth() / 2, (float)GetScreenHeight() / 3 * 2 }, 20);
 		break;

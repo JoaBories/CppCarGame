@@ -57,3 +57,13 @@ Tile* Tilemap::GetTile(int row, int col) const
 {
 	return mTiles[row][col];
 }
+
+int Tilemap::GetRows() const
+{
+	return mTiles.size();
+}
+
+int Tilemap::GetCols() const
+{
+	return mTiles[0].size();
+}
