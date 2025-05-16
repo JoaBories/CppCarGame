@@ -42,9 +42,9 @@ void Track::SaveTrack() const
 	if (!file) return;
 
 	Checkpoint checkpoint = mTrackObjects->GetStart();
-	file << "Start " << checkpoint.position.x << " " << checkpoint.position.y << " " << checkpoint.size.x << " " << checkpoint.size.y << " " << checkpoint.rotation << " " << checkpoint.direction.x << " " << checkpoint.direction.y << endl;
+	file << "Start " << checkpoint.position.x << " " << checkpoint.position.y << " " << checkpoint.size.x << " " << checkpoint.size.y << " " << checkpoint.direction.x << " " << checkpoint.direction.y << " " << checkpoint.rotation << endl;
 	checkpoint = mTrackObjects->GetCheckpoint();
-	file << "Checkpoint " << checkpoint.position.x << " " << checkpoint.position.y << " " << checkpoint.size.x << " " << checkpoint.size.y << " " << checkpoint.rotation << " " << checkpoint.direction.x << " " << checkpoint.direction.y << endl;
+	file << "Checkpoint " << checkpoint.position.x << " " << checkpoint.position.y << " " << checkpoint.size.x << " " << checkpoint.size.y << " " << checkpoint.direction.x << " " << checkpoint.direction.y << " " << checkpoint.rotation << endl;
 	
 	vector<Obstacles> obstacles = mTrackObjects->GetObstacles();
 	file << "Obstacles " << obstacles.size() << endl;
