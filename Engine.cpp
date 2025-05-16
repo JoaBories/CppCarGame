@@ -31,6 +31,7 @@ void Engine::Update()
 		else if (IsKeyPressed(KEY_P) && mTrack->IsThereASave())
 		{
 			mGameState = RaceState;
+			mTrack->LoadTrack();
 		}
 		break;
 

@@ -83,6 +83,33 @@ void Track::LoadTrack()
 		file >> a >> b >> c >> d >> e >> f >> g;
 		mTrackObjects->SetStart({(float) a, (float)b}, {(float) c, (float) d}, {(float) e, (float) f}, g);
 
+		file >> label;
+		file >> a >> b >> c >> d >> e >> f >> g;
+		mTrackObjects->SetCheckpoint({(float) a, (float)b}, {(float) c, (float) d}, {(float) e, (float) f}, g);
+
+		file >> label;
+		file >> a;
+
+		mTrackObjects->ClearObstacles();
+		for (size_t i = 0; i < a; i++)
+		{
+			file >> label;
+			file >> b >> c >> d >> e >> f;
+			mTrackObjects->AddObstacle(Obstacles({ (float)b, (float)c }, { (float)d, (float)e }, f));
+		}
+
+		file >> label;
+		file >> a >> b;
+
+		for (size_t r = 0; r < a; r++)
+		{
+			for (size_t col = 0; col < b; col++)
+			{
+				file >> c >> d;
+				mTilemap->GetTile(r, col)->SetLayer1Index(c);
+				mTilemap->GetTile(r, col)->SetLayer1Rot(d);
+			}
+		}
 	}
 
 }
