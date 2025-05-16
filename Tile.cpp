@@ -33,7 +33,7 @@ void Tile::DrawLayer0(Vector2 position, Vector2 size) const
 
 void Tile::DrawLayer1(Vector2 position, Vector2 size) const
 {
-	Rectangle rect = Rectangle{ position.x, position.y, size.x-2, size.y-2 };
+	Rectangle rect = Rectangle{ position.x, position.y, size.x, size.y };
 
 	DrawLayer(rect, mLayer1);
 }
