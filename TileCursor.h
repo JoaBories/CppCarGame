@@ -28,7 +28,6 @@ private:
 
 	bool hasSaved;
 
-	bool isTrackValid() const;
 
 public:
 	TileCursor();
@@ -41,6 +40,7 @@ public:
 	int GetRowIndex() const;
 	int GetColIndex() const;
 
+	bool isTrackValid() const;
 	bool HasSaved() const;
 	void Reset();
 };

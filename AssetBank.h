@@ -20,7 +20,7 @@ public :
 	}
 
 	bool operator<(const TileLayer& other) const {
-		// Simple lexicographic comparison
+		// Comparison set it work with map
 		return std::tie(type, index, rotation) < std::tie(other.type, other.index, other.rotation);
 	}
 };
@@ -34,6 +34,7 @@ private :
 	Texture* mStartTexture;
 	Texture* mCheckpointTexture;
 	Texture* mObstacleTexture;
+	Texture* mEditorControlsTexture;
 
 	Texture* LoadTextureFromSource(const char* source);
 
@@ -49,5 +50,6 @@ public :
 	Texture* GetStartTexture() const;
 	Texture* GetCheckpointTexture() const;
 	Texture* GetObstacleTexture() const;
+	Texture* GetEditorControlsTexture() const;
 };
 
