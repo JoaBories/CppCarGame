@@ -222,19 +222,11 @@ void TileCursor::Update()
 
 		case SetStart:
 			mType = SetCheckpoint;
-			if (mTrack->GetTrackObjects()->GetStart().position.x == 0 && mTrack->GetTrackObjects()->GetStart().position.y == 0)
-			{
-				mTrack->GetTrackObjects()->SetStart({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
-			}
 			mRotation = 0;
 			break;
 
 		case SetCheckpoint:
 			mType = SetObstacles;
-			if (mTrack->GetTrackObjects()->GetCheckpoint().position.x == 0 && mTrack->GetTrackObjects()->GetCheckpoint().position.y == 0)
-			{
-				mTrack->GetTrackObjects()->SetCheckpoint({ mSize.x * (0.5f + mColIndex), mSize.y * (0.5f + mRowIndex) }, CheckpointSize, CheckpointDir, mRotation);
-			}
 			mRotation = 0;
 			break;
 
