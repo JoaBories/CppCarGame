@@ -2,6 +2,7 @@
 #include <string>
 #include "Track.h"
 #include "TileCursor.h"
+#include "Car.h"
 
 enum GameState
 {
@@ -15,6 +16,8 @@ class Engine
 private :
 	TileCursor* mTileCursor;
 	Track* mTrack;
+	Car* mCar;
+
 	GameState mGameState;
 
 public :

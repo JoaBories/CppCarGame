@@ -25,6 +25,7 @@ AssetBank::AssetBank()
 	mCheckpointTexture = LoadTextureFromSource("resources/img/checkpoint.png");
 	mObstacleTexture = LoadTextureFromSource("resources/img/obstacle.png");
 	mEditorControlsTexture = LoadTextureFromSource("resources/img/editor_controls.png");
+	mCarTexture = LoadTextureFromSource("resources/img/car_1.png");
 
     mTileLayers[{0, 1, 0}] = LoadTextureFromSource("resources/img/grass_1.png");
 
@@ -86,4 +87,9 @@ Texture* AssetBank::GetObstacleTexture() const
 Texture* AssetBank::GetEditorControlsTexture() const
 {
 	return mEditorControlsTexture;
+}
+
+Texture* AssetBank::GetCarTexture() const
+{
+	return mCarTexture;
 }

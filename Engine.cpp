@@ -3,6 +3,7 @@
 Engine::Engine() :
 	mTileCursor{ nullptr },
 	mTrack{ nullptr },
+	mCar{ nullptr },
 	mGameState{ StartState }
 {
 }
@@ -15,6 +16,7 @@ void Engine::Init()
 {
 	mTrack = new Track();
 	mTileCursor = new TileCursor(9, 16, mTrack->GetTilemap()->GetTileSize(), mTrack);
+	mCar = new Car({ 200, 200 }, { 50, 100 }, {1,0}, 50);
 }
 
 void Engine::Update()
@@ -45,6 +47,8 @@ void Engine::Update()
 		break;
 
 	case RaceState:
+
+		mCar->Update();
 
 		break;
 
@@ -95,6 +99,7 @@ void Engine::Draw()
 
 	case RaceState:
 		mTrack->Draw();
+		mCar->Draw();
 		break;
 
 	}

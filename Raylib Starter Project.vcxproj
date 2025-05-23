@@ -135,6 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetBank.cpp" />
+    <ClCompile Include="Car.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Obstacles.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetBank.h" />
+    <ClInclude Include="Car.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Obstacles.h" />
     <ClInclude Include="Tile.h" />

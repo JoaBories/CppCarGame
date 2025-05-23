@@ -35,6 +35,7 @@ private :
 	Texture* mCheckpointTexture;
 	Texture* mObstacleTexture;
 	Texture* mEditorControlsTexture;
+	Texture* mCarTexture;
 
 	Texture* LoadTextureFromSource(const char* source);
 
@@ -51,5 +52,6 @@ public :
 	Texture* GetCheckpointTexture() const;
 	Texture* GetObstacleTexture() const;
 	Texture* GetEditorControlsTexture() const;
+	Texture* GetCarTexture() const;
 };
 

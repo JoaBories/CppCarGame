@@ -16,7 +16,7 @@ float Utils::SqrLenght(Vector2 vector)
 
 float Utils::Lenght(Vector2 vector)
 {
-	return Sqrt(SqrLenght(vector));
+	return sqrtf(SqrLenght(vector));
 }
 
 Vector2 Utils::Normalize(Vector2 vector)
@@ -36,6 +36,20 @@ Vector2 Utils::AbsDistance(Vector2 a, Vector2 b)
 	return { Abs(d.x), Abs(d.y) };
 }
 
+float Utils::RotFromVector2(Vector2 vector)
+{
+	if (vector.x == 0 && vector.y == 0) return 0;
+	float a = atan2f(vector.y, vector.x) * RAD2DEG;
+	if (a < 0) a += 360;
+	return a;
+}
+
+Vector2 Utils::Vector2FromRot(float angle)
+{
+	Vector2 vector = { cosf(angle * DEG2RAD), sinf(angle * DEG2RAD) };
+	return Normalize(vector);
+}
+
 float Utils::Min(float a, float b)
 {
 	return (a <= b) ? a : b;
@@ -49,28 +63,6 @@ float Utils::Max(float a, float b)
 float Utils::Abs(float value)
 {
 	return (value < 0) ? -value : value;
-}
-
-float Utils::FastInvSqrt(float value)
-{
-	long i;
-	float x2, y;
-	const float threehalfs = 1.5F;
-
-	x2 = value * 0.5F;
-	y = value;
-	i = *(long*)&y;             // evil floating point bit level hacking
-	i = 0x5f3759df - (i >> 1);  // what the fuck?
-	y = *(float*)&i;
-	y = y * (threehalfs - (x2 * y * y));  // 1st iteration
-	//y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
-
-	return y;
-}
-
-float Utils::Sqrt(float value)
-{
-	return value * FastInvSqrt(value);
 }
 
 float Utils::Clamp(float value, float min, float max)
