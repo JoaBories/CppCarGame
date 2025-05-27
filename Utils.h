@@ -12,6 +12,9 @@ using std::uniform_int_distribution;
 
 using std::string;
 
+#include <vector>
+using std::vector;
+
 #include <cmath>
 
 class Utils
@@ -29,6 +32,9 @@ public:
 	static Vector2 AbsDistance(Vector2 a, Vector2 b);
 	static float RotFromVector2(Vector2 vector);
 	static Vector2 Vector2FromRot(float rot);
+	static float DotProduct(Vector2 a, Vector2 b);
+	static Vector2 Vector2Scale(Vector2 vector, float scale);
+	static Vector2 Vector2Add(Vector2 a, Vector2 b);
 
 	static float Min(float a, float b);
 	static float Max(float a, float b);
@@ -42,6 +48,8 @@ public:
 
 	static int RandInt(int min, int max);
 
+	static vector<Vector2> GetCorners(Rectangle rect, int rotation = 0);
+	static bool OverlapOnAxis(const vector<Vector2>& a, const vector<Vector2>& b, Vector2 axis);
 
 	//Text functions
 	static void DrawTextCentered(string text, Vector2 position, int fontSize);

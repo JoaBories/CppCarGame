@@ -50,6 +50,23 @@ Vector2 Utils::Vector2FromRot(float angle)
 	return Normalize(vector);
 }
 
+float Utils::DotProduct(Vector2 a, Vector2 b)
+{
+	Vector2 normalizedA = Normalize(a);
+	Vector2 normalizedB = Normalize(b);
+	return (normalizedA.x * normalizedB.x) + (normalizedA.y * normalizedB.y);
+}
+
+Vector2 Utils::Vector2Scale(Vector2 vector, float scale)
+{
+	return { vector.x * scale, vector.y * scale };
+}
+
+Vector2 Utils::Vector2Add(Vector2 a, Vector2 b)
+{
+	return { a.x + b.x, a.y + b.y };
+}
+
 float Utils::Min(float a, float b)
 {
 	return (a <= b) ? a : b;
@@ -102,6 +119,39 @@ int Utils::RandInt(int min, int max)
 
 	uniform_int_distribution<> distr(min, max);
 	return distr(gen);
+}
+
+vector<Vector2> Utils::GetCorners(Rectangle rect, int rotation)
+{
+	vector<Vector2> corners(4);
+	float cosA = cosf(rotation * DEG2RAD);
+	float sinA = sinf(rotation * DEG2RAD);
+
+	Vector2 right = { cosA, sinA };
+	Vector2 up = { -sinA, cosA };
+
+	corners[0] = Vector2Add({ rect.x, rect.y }, Vector2Add(Vector2Scale(right, rect.width * 0.5f), Vector2Scale(up, rect.height * 0.5f)));
+	corners[1] = Vector2Add({ rect.x, rect.y }, Vector2Add(Vector2Scale(right, -rect.width * 0.5f), Vector2Scale(up, rect.height * 0.5f)));
+	corners[2] = Vector2Add({ rect.x, rect.y }, Vector2Add(Vector2Scale(right, -rect.width * 0.5f), Vector2Scale(up, -rect.height * 0.5f)));
+	corners[3] = Vector2Add({ rect.x, rect.y }, Vector2Add(Vector2Scale(right, rect.width * 0.5f), Vector2Scale(up, -rect.height * 0.5f)));
+
+	return corners;
+}
+
+bool Utils::OverlapOnAxis(const vector<Vector2>& a, const vector<Vector2>& b, Vector2 axis)
+{
+	float minA = FLT_MAX, maxA = -FLT_MAX;
+	float minB = FLT_MAX, maxB = -FLT_MAX;
+
+	for (const auto& point : a)
+	{
+		float projection = DotProduct(point, axis);
+		minA = Min(minA, projection);
+		maxA = Max(maxA, projection);
+	}
+
+
+	return false;
 }
 
 void Utils::DrawTextCentered(string text, Vector2 position, int fontSize)

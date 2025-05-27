@@ -16,7 +16,9 @@ void Engine::Init()
 {
 	mTrack = new Track();
 	mTileCursor = new TileCursor(9, 16, mTrack->GetTilemap()->GetTileSize(), mTrack);
-	mCar = new Car({ 200, 200 }, { 50, 100 }, {1,0}, 50);
+
+	CarControls controls = { KEY_D, KEY_A, KEY_W, KEY_S };
+	mCar = new Car({ 200, 200 }, { 30, 60 }, {1,0}, mTrack, 10, 750, 400, controls);
 }
 
 void Engine::Update()
@@ -53,9 +55,6 @@ void Engine::Update()
 		break;
 
 	}
-
-	
-
 }
 
 void Engine::Draw()
