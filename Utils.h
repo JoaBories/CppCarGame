@@ -48,8 +48,9 @@ public:
 
 	static int RandInt(int min, int max);
 
-	static vector<Vector2> GetCorners(Rectangle rect, int rotation = 0);
+	static vector<Vector2> GetCorners(Rectangle rect, float rotation);
 	static bool OverlapOnAxis(const vector<Vector2>& a, const vector<Vector2>& b, Vector2 axis);
+	static bool CheckOBB(const Rectangle& a, const int& aRot, const Rectangle& b, const int& bRot);
 
 	//Text functions
 	static void DrawTextCentered(string text, Vector2 position, int fontSize);

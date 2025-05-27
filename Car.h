@@ -31,6 +31,10 @@ private:
 
 	Track* mTrackPtr;
 
+	void CheckCollisions();
+	void CheckObstacles() const;
+	void CheckScreenBounds();
+
 public:
 	Car();
 	~Car();

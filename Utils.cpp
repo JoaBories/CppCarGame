@@ -21,6 +21,7 @@ float Utils::Lenght(Vector2 vector)
 
 Vector2 Utils::Normalize(Vector2 vector)
 {
+	if (vector.x == 0 && vector.y == 0) return { 0, 0 };
 	float l = Lenght(vector);
 	return { vector.x/l, vector.y/l };
 }
@@ -52,9 +53,7 @@ Vector2 Utils::Vector2FromRot(float angle)
 
 float Utils::DotProduct(Vector2 a, Vector2 b)
 {
-	Vector2 normalizedA = Normalize(a);
-	Vector2 normalizedB = Normalize(b);
-	return (normalizedA.x * normalizedB.x) + (normalizedA.y * normalizedB.y);
+	return (a.x * b.x) + (a.y * b.y);
 }
 
 Vector2 Utils::Vector2Scale(Vector2 vector, float scale)
@@ -121,7 +120,7 @@ int Utils::RandInt(int min, int max)
 	return distr(gen);
 }
 
-vector<Vector2> Utils::GetCorners(Rectangle rect, int rotation)
+vector<Vector2> Utils::GetCorners(Rectangle rect, float rotation)
 {
 	vector<Vector2> corners(4);
 	float cosA = cosf(rotation * DEG2RAD);
@@ -150,8 +149,97 @@ bool Utils::OverlapOnAxis(const vector<Vector2>& a, const vector<Vector2>& b, Ve
 		maxA = Max(maxA, projection);
 	}
 
+	for (const auto& point : b)
+	{
+		float projection = DotProduct(point, axis);
+		minB = Min(minB, projection);
+		maxB = Max(maxB, projection);
+	}
 
-	return false;
+	return !(maxA < minB || maxB < minA);
+}
+
+bool Utils::CheckOBB(const Rectangle& a, const int& aRot, const Rectangle& b, const int& bRot)
+{
+	vector<Vector2> cornersA = GetCorners(a, aRot);
+	vector<Vector2> cornersB = GetCorners(b, bRot);
+
+	vector<Vector2> axes;
+
+	Vector2 edge;
+	Vector2 normal;
+
+	edge = Distance(cornersA[0], cornersA[1]);
+	normal = { -edge.y, edge.x };
+	axes.push_back(Normalize(Normalize(normal)));
+
+	edge = Distance(cornersA[1], cornersA[2]);
+	normal = { -edge.y, edge.x };
+	axes.push_back(Normalize(Normalize(normal)));
+
+	edge = Distance(cornersB[0], cornersB[1]);
+	normal = { -edge.y, edge.x };
+	axes.push_back(Normalize(Normalize(normal)));
+
+	edge = Distance(cornersB[1], cornersB[2]);
+	normal = { -edge.y, edge.x };
+	axes.push_back(Normalize(Normalize(normal)));
+
+	// ====================================== DEBUG DRAWING =========================================
+	//DrawCircleV(cornersA[0], 5, BLUE);
+	//DrawCircleV(cornersA[1], 5, GREEN);
+	//DrawCircleV(cornersA[2], 5, RED);
+	//DrawCircleV(cornersA[3], 5, YELLOW);
+	//
+	//DrawCircleV(cornersB[0], 5, BLUE);
+	//DrawCircleV(cornersB[1], 5, GREEN);
+	//DrawCircleV(cornersB[2], 5, RED);
+	//DrawCircleV(cornersB[3], 5, YELLOW);
+	//
+	//for (int i = 0; i < 4; ++i)
+	//	DrawLineV(cornersA[i], cornersA[(i + 1) % 4], RED);
+	//
+	//for (int i = 0; i < 4; ++i)
+	//	DrawLineV(cornersB[i], cornersB[(i + 1) % 4], BLUE);
+	//
+	//Vector2 axiss;
+	//axiss = axes[0];
+	//DrawLineV(Vector2Add({ a.x, a.y }, Vector2Scale(axiss, 50)), Vector2Add({ a.x, a.y }, Vector2Scale(axiss, -50)), VIOLET);
+	//if (!OverlapOnAxis(cornersA, cornersB, axes[0]))
+	//{
+	//	DrawLineV(Vector2Add({ a.x, a.y }, Vector2Scale(axiss, 50)), Vector2Add({ a.x, a.y }, Vector2Scale(axiss, -50)), RED);
+	//}
+	//
+	//axiss = axes[1];
+	//DrawLineV(Vector2Add({ a.x, a.y }, Vector2Scale(axiss, 50)), Vector2Add({ a.x, a.y }, Vector2Scale(axiss, -50)), GREEN);
+	//if (!OverlapOnAxis(cornersA, cornersB, axes[1]))
+	//{
+	//	DrawLineV(Vector2Add({ a.x, a.y }, Vector2Scale(axiss, 50)), Vector2Add({ a.x, a.y }, Vector2Scale(axiss, -50)), RED);
+	//}
+	//
+	//axiss = axes[2];
+	//DrawLineV(Vector2Add({ b.x, b.y }, Vector2Scale(axiss, 50)), Vector2Add({ b.x, b.y }, Vector2Scale(axiss, -50)), BLUE);
+	//if (!OverlapOnAxis(cornersA, cornersB, axes[2]))
+	//{
+	//	DrawLineV(Vector2Add({ b.x, b.y }, Vector2Scale(axiss, 50)), Vector2Add({ b.x, b.y }, Vector2Scale(axiss, -50)), RED);
+	//}
+	//
+	//axiss = axes[3];
+	//DrawLineV(Vector2Add({ b.x, b.y }, Vector2Scale(axiss, 50)), Vector2Add({ b.x, b.y }, Vector2Scale(axiss, -50)), YELLOW);
+	//if (!OverlapOnAxis(cornersA, cornersB, axes[3]))
+	//{
+	//	DrawLineV(Vector2Add({ b.x, b.y }, Vector2Scale(axiss, 50)), Vector2Add({ b.x, b.y }, Vector2Scale(axiss, -50)), RED);
+	//}
+
+	for (const auto& axis : axes)
+	{
+		if (!OverlapOnAxis(cornersA, cornersB, axis))
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void Utils::DrawTextCentered(string text, Vector2 position, int fontSize)

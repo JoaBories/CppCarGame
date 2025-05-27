@@ -1,5 +1,34 @@
 #include "Car.h"
 
+void Car::CheckCollisions()
+{
+	CheckObstacles();
+
+	CheckScreenBounds();
+}
+
+void Car::CheckObstacles() const
+{
+	Rectangle carRect = { mPosition.x, mPosition.y, mSize.x, mSize.y };
+	float carRot = Utils::RotFromVector2(mDirection) + 90;
+	float minDistance = Utils::Max(mSize.x, mSize.y) * 3;
+	minDistance *= minDistance;
+
+	for (const auto& obstacle : mTrackPtr->GetTrackObjects()->GetObstacles())
+	{
+		float sqrDistance = Utils::SqrLenght(Utils::Distance({ mPosition.x, mPosition.y }, obstacle.GetPosition()));
+		if (sqrDistance <= minDistance)
+		{
+			Rectangle obstacleRect = { obstacle.GetPosition().x, obstacle.GetPosition().y, obstacle.GetSize().x, obstacle.GetSize().y };
+		}
+	}
+}
+
+void Car::CheckScreenBounds()
+{
+	
+}
+
 Car::Car() :
 	mPosition{ 0,0 },
 	mSize{ 0,0 },
@@ -34,8 +63,6 @@ Car::Car(Vector2 position, Vector2 size, Vector2 direction, Track* trackPtr, flo
 {
 }
 
-
-
 void Car::Update() 
 {
 	Tilemap* tilemapPtr = mTrackPtr->GetTilemap();
@@ -45,7 +72,7 @@ void Car::Update()
 
 	float tileTurnSpeed = 0;
 
-	float angleDiff = Utils::Abs(Utils::DotProduct(mDirection, Utils::Normalize(mVelocity)));
+	float angleDiff = Utils::Abs(Utils::DotProduct(Utils::Normalize(mDirection), Utils::Normalize(mVelocity)));
 
 	float speed = Utils::Lenght(mVelocity);
 
@@ -93,6 +120,8 @@ void Car::Update()
 	}
 
 	mPosition = Utils::Vector2Add(mPosition, Utils::Vector2Scale(mVelocity, GetFrameTime()));
+
+	CheckCollisions();
 }
 
 void Car::Draw() const
@@ -100,12 +129,6 @@ void Car::Draw() const
 	Rectangle rect = { mPosition.x, mPosition.y, mSize.x, mSize.y };
 	Texture* texture = AssetBank::GetInstance()->GetCarTexture();
 	DrawTexturePro(*texture, { 0, 0, (float)texture->width, (float)texture->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, Utils::RotFromVector2(mDirection) + 90, WHITE);
-
-	DrawRectanglePro(rect, { rect.width * 0.5f, rect.height * 0.5f }, Utils::RotFromVector2(mDirection) + 90, { 255, 0, 0, 50 });
-	for (Vector2 corner : Utils::GetCorners( rect, Utils::RotFromVector2(mDirection) + 90))
-	{
-		DrawCircleV(corner, 5, RED);
-	}
 }
 
 Vector2 Car::GetPosition() const
