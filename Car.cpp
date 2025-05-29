@@ -7,26 +7,85 @@ void Car::CheckCollisions()
 	CheckScreenBounds();
 }
 
-void Car::CheckObstacles() const
+void Car::CheckObstacles()
 {
 	Rectangle carRect = { mPosition.x, mPosition.y, mSize.x, mSize.y };
 	float carRot = Utils::RotFromVector2(mDirection) + 90;
+
 	float minDistance = Utils::Max(mSize.x, mSize.y) * 3;
 	minDistance *= minDistance;
 
 	for (const auto& obstacle : mTrackPtr->GetTrackObjects()->GetObstacles())
 	{
-		float sqrDistance = Utils::SqrLenght(Utils::Distance({ mPosition.x, mPosition.y }, obstacle.GetPosition()));
+		float sqrDistance = Utils::SqrLenght(Utils::Vector2Substract({ mPosition.x, mPosition.y }, obstacle.GetPosition()));
 		if (sqrDistance <= minDistance)
 		{
 			Rectangle obstacleRect = { obstacle.GetPosition().x, obstacle.GetPosition().y, obstacle.GetSize().x, obstacle.GetSize().y };
+
+			OBBCollision result = Utils::CheckOBB(carRect, carRot, obstacleRect, 0);
+
+			if (result.collision)
+			{
+				Vector2 resolution = Utils::Vector2Scale(result.minTranslationAxis, result.minTranslationOverlap);
+				Vector2 direction = Utils::Vector2Substract(mPosition, obstacle.GetPosition());
+
+				if (Utils::DotProduct(direction, resolution) < 0)
+				{
+					resolution = Utils::Vector2Negate(resolution);
+				}
+
+				if (Utils::SqrLenght(resolution) > 0)
+				{
+					ResolveCollision(resolution);
+				}
+			}
 		}
 	}
 }
 
 void Car::CheckScreenBounds()
 {
+	Rectangle carRect = { mPosition.x, mPosition.y, mSize.x, mSize.y };
+	float carRot = Utils::RotFromVector2(mDirection) + 90;
+
+	Vector2 resolution = { 0, 0 };
+
+	for (const Vector2& corner : Utils::GetCorners(carRect, carRot)) 
+	{
+		if (corner.x < 0)
+		{
+			resolution.x -= corner.x;
+		}
+		if (corner.x > GetScreenWidth())
+		{
+			resolution.x += GetScreenWidth() - corner.x;
+		}
+		if (corner.y < 0)
+		{
+			resolution.y -= corner.y;
+		}
+		if (corner.y > GetScreenHeight())
+		{
+			resolution.y += GetScreenHeight() - corner.y;
+		}
+	}
+
+	if (Utils::SqrLenght(resolution) > 0)
+	{
+		ResolveCollision(resolution);
+	}
+}
+
+void Car::ResolveCollision(Vector2 resolutionVector)
+{
+	mPosition = Utils::Vector2Add(mPosition, resolutionVector);
 	
+	Vector2 axis = Utils::Normalize(resolutionVector);
+	Vector2 perpendicular = Utils::Vector2Scale( axis, Utils::DotProduct(mVelocity, axis));
+
+	cout << "perpendicular: " << perpendicular.x << ", " << perpendicular.y << endl;
+
+	mVelocity = Utils::Vector2Substract(mVelocity, perpendicular);
 }
 
 Car::Car() :

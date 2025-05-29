@@ -17,6 +17,13 @@ using std::vector;
 
 #include <cmath>
 
+struct OBBCollision 
+{
+	bool collision;
+	Vector2 minTranslationAxis;
+	float minTranslationOverlap = FLT_MAX;
+};
+
 class Utils
 {
 private:
@@ -28,13 +35,14 @@ public:
 	static float SqrLenght(Vector2 vector);
 	static float Lenght(Vector2 vector);
 	static Vector2 Normalize(Vector2 vector);
-	static Vector2 Distance(Vector2 a, Vector2 b);
-	static Vector2 AbsDistance(Vector2 a, Vector2 b);
+	static Vector2 Vector2Substract(Vector2 a, Vector2 b);
+	static Vector2 Vector2Distance(Vector2 a, Vector2 b);
 	static float RotFromVector2(Vector2 vector);
 	static Vector2 Vector2FromRot(float rot);
 	static float DotProduct(Vector2 a, Vector2 b);
 	static Vector2 Vector2Scale(Vector2 vector, float scale);
 	static Vector2 Vector2Add(Vector2 a, Vector2 b);
+	static Vector2 Vector2Negate(Vector2 vector);
 
 	static float Min(float a, float b);
 	static float Max(float a, float b);
@@ -49,8 +57,8 @@ public:
 	static int RandInt(int min, int max);
 
 	static vector<Vector2> GetCorners(Rectangle rect, float rotation);
-	static bool OverlapOnAxis(const vector<Vector2>& a, const vector<Vector2>& b, Vector2 axis);
-	static bool CheckOBB(const Rectangle& a, const int& aRot, const Rectangle& b, const int& bRot);
+	static float OverlapOnAxis(const vector<Vector2>& a, const vector<Vector2>& b, Vector2 axis);
+	static OBBCollision CheckOBB(const Rectangle& a, const int& aRot, const Rectangle& b, const int& bRot);
 
 	//Text functions
 	static void DrawTextCentered(string text, Vector2 position, int fontSize);

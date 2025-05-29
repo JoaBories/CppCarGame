@@ -32,8 +32,10 @@ private:
 	Track* mTrackPtr;
 
 	void CheckCollisions();
-	void CheckObstacles() const;
+	void CheckObstacles();
 	void CheckScreenBounds();
+
+	void ResolveCollision(Vector2 resolutionVector);
 
 public:
 	Car();

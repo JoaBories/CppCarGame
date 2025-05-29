@@ -26,14 +26,14 @@ Vector2 Utils::Normalize(Vector2 vector)
 	return { vector.x/l, vector.y/l };
 }
 
-Vector2 Utils::Distance(Vector2 a, Vector2 b)
+Vector2 Utils::Vector2Substract(Vector2 a, Vector2 b)
 {
 	return { a.x - b.x, a.y - b.y };
 }
 
-Vector2 Utils::AbsDistance(Vector2 a, Vector2 b)
+Vector2 Utils::Vector2Distance(Vector2 a, Vector2 b)
 {
-	Vector2 d = Distance(a, b);
+	Vector2 d = Vector2Substract(a, b);
 	return { Abs(d.x), Abs(d.y) };
 }
 
@@ -64,6 +64,11 @@ Vector2 Utils::Vector2Scale(Vector2 vector, float scale)
 Vector2 Utils::Vector2Add(Vector2 a, Vector2 b)
 {
 	return { a.x + b.x, a.y + b.y };
+}
+
+Vector2 Utils::Vector2Negate(Vector2 vector)
+{
+	return { -vector.x, -vector.y };
 }
 
 float Utils::Min(float a, float b)
@@ -137,7 +142,7 @@ vector<Vector2> Utils::GetCorners(Rectangle rect, float rotation)
 	return corners;
 }
 
-bool Utils::OverlapOnAxis(const vector<Vector2>& a, const vector<Vector2>& b, Vector2 axis)
+float Utils::OverlapOnAxis(const vector<Vector2>& a, const vector<Vector2>& b, Vector2 axis)
 {
 	float minA = FLT_MAX, maxA = -FLT_MAX;
 	float minB = FLT_MAX, maxB = -FLT_MAX;
@@ -156,10 +161,10 @@ bool Utils::OverlapOnAxis(const vector<Vector2>& a, const vector<Vector2>& b, Ve
 		maxB = Max(maxB, projection);
 	}
 
-	return !(maxA < minB || maxB < minA);
+	return Min(maxA, maxB) - Max(minA, minB);
 }
 
-bool Utils::CheckOBB(const Rectangle& a, const int& aRot, const Rectangle& b, const int& bRot)
+OBBCollision Utils::CheckOBB(const Rectangle& a, const int& aRot, const Rectangle& b, const int& bRot)
 {
 	vector<Vector2> cornersA = GetCorners(a, aRot);
 	vector<Vector2> cornersB = GetCorners(b, bRot);
@@ -169,19 +174,21 @@ bool Utils::CheckOBB(const Rectangle& a, const int& aRot, const Rectangle& b, co
 	Vector2 edge;
 	Vector2 normal;
 
-	edge = Distance(cornersA[0], cornersA[1]);
+	OBBCollision collision;
+
+	edge = Vector2Substract(cornersA[0], cornersA[1]);
 	normal = { -edge.y, edge.x };
 	axes.push_back(Normalize(Normalize(normal)));
 
-	edge = Distance(cornersA[1], cornersA[2]);
+	edge = Vector2Substract(cornersA[1], cornersA[2]);
 	normal = { -edge.y, edge.x };
 	axes.push_back(Normalize(Normalize(normal)));
 
-	edge = Distance(cornersB[0], cornersB[1]);
+	edge = Vector2Substract(cornersB[0], cornersB[1]);
 	normal = { -edge.y, edge.x };
 	axes.push_back(Normalize(Normalize(normal)));
 
-	edge = Distance(cornersB[1], cornersB[2]);
+	edge = Vector2Substract(cornersB[1], cornersB[2]);
 	normal = { -edge.y, edge.x };
 	axes.push_back(Normalize(Normalize(normal)));
 
@@ -233,13 +240,22 @@ bool Utils::CheckOBB(const Rectangle& a, const int& aRot, const Rectangle& b, co
 
 	for (const auto& axis : axes)
 	{
-		if (!OverlapOnAxis(cornersA, cornersB, axis))
+		float overlap = OverlapOnAxis(cornersA, cornersB, axis);
+
+		if (overlap < 0)
 		{
-			return false;
+			collision.collision = false;
+			return collision;
+		}
+		else if (overlap < collision.minTranslationOverlap)
+		{
+			collision.minTranslationOverlap = overlap;
+			collision.minTranslationAxis = axis;
 		}
 	}
 
-	return true;
+	collision.collision = true;
+	return collision;
 }
 
 void Utils::DrawTextCentered(string text, Vector2 position, int fontSize)
