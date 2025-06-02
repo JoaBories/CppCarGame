@@ -62,5 +62,7 @@ public:
 
 	//Text functions
 	static void DrawTextCentered(string text, Vector2 position, int fontSize);
+	static void DrawTextCentered(string text, Vector2 position, int fontSize, Color color);
+	static void DrawRectangleCentered(Rectangle rect, Color color);
 };
 

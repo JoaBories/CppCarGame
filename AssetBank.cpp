@@ -27,6 +27,8 @@ AssetBank::AssetBank()
 	mEditorControlsTexture = LoadTextureFromSource("resources/img/editor_controls.png");
 	mCarTexture = LoadTextureFromSource("resources/img/car_1.png");
 
+	mSkidMarkTexture = LoadTextureFromSource("resources/img/skid_mark.png");
+
     mTileLayers[{0, 1, 0}] = LoadTextureFromSource("resources/img/grass_1.png");
 
     mTileLayers[{1, 1, 0}] = LoadTextureFromSource("resources/img/road_1.png");
@@ -92,4 +94,9 @@ Texture* AssetBank::GetEditorControlsTexture() const
 Texture* AssetBank::GetCarTexture() const
 {
 	return mCarTexture;
+}
+
+Texture* AssetBank::GetSkidMarkTexture() const
+{
+    return mSkidMarkTexture;
 }

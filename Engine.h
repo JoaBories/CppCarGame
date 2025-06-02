@@ -20,6 +20,10 @@ private :
 
 	GameState mGameState;
 
+	Color mOrange;
+
+	void StartRace();
+
 public :
 	Engine();
 	~Engine();

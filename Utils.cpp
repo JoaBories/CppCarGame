@@ -237,6 +237,8 @@ OBBCollision Utils::CheckOBB(const Rectangle& a, const int& aRot, const Rectangl
 	//{
 	//	DrawLineV(Vector2Add({ b.x, b.y }, Vector2Scale(axiss, 50)), Vector2Add({ b.x, b.y }, Vector2Scale(axiss, -50)), RED);
 	//}
+	// 
+	// ===============================================================================================
 
 	for (const auto& axis : axes)
 	{
@@ -263,6 +265,18 @@ void Utils::DrawTextCentered(string text, Vector2 position, int fontSize)
 	float xCentered = position.x - (float) MeasureText(text.c_str(), fontSize) / 2;
 	float yCentered = position.y - fontSize / 2;
 	DrawText(text.c_str(), xCentered, yCentered, fontSize, WHITE);
+}
 
-	return;
+void Utils::DrawTextCentered(string text, Vector2 position, int fontSize, Color color)
+{
+	float xCentered = position.x - (float)MeasureText(text.c_str(), fontSize) / 2;
+	float yCentered = position.y - fontSize / 2;
+	DrawText(text.c_str(), xCentered, yCentered, fontSize, color);
+}
+
+void Utils::DrawRectangleCentered(Rectangle rect, Color color)
+{
+	float xCentered = rect.x - rect.width * 0.5f;
+	float yCentered = rect.y - rect.height * 0.5f;
+	DrawRectangle(xCentered, yCentered, rect.width, rect.height, color);
 }

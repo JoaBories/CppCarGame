@@ -12,6 +12,12 @@ struct CarControls
 	int brake;
 };
 
+struct SkidMark {
+	Vector2 position;
+	float rotation;
+	double lifetime;
+};
+
 class Car
 {
 private:
@@ -21,11 +27,19 @@ private:
 	Vector2 mVelocity;
 	Vector2 mDirection;
 
+	vector<SkidMark*> mSkidMarks;
+	float mSkidMarkLifetime;
+
 	float mTurnSpeed;
 	float mAccelRate;
 	float mMaxFriction;
 	float mMinFriction;
 	float mMaxSpeed;
+
+	bool mHasCheckpoint;
+	int mLapCount;
+	float mBestLapTime;
+	float mCurrentLapStartTime;
 
 	CarControls mControls;
 
@@ -36,6 +50,11 @@ private:
 	void CheckScreenBounds();
 
 	void ResolveCollision(Vector2 resolutionVector);
+
+	void SpawnSkidMark();
+
+	void UpdateSkidMarks();
+	void DrawSkidMarks() const;
 
 public:
 	Car();
@@ -49,5 +68,16 @@ public:
 	Vector2 GetPosition() const;
 	Vector2 GetSize() const;
 	Vector2 GetDirection() const;
+
+	bool HasCheckpoint() const;
+	void SetHasCheckpoint(bool hasCheckpoint);
+
+	int GetLapCount() const;
+
+	float GetBestLapTime() const;
+	float GetCurrentLapTime() const;
+	void StartCurrentLap();
+	void FinishLap();
+
 };
 
