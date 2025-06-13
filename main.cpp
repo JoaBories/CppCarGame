@@ -19,7 +19,6 @@ const char* gameName = "CarGame";
 
 AssetBank* assetBank = nullptr;
 
-
 int main() {
 
     Init();
@@ -46,6 +45,8 @@ void Init()
 void DeInit()
 {
     CloseWindow();
+
+    delete assetBank;
 }
 
 void UpdateDraw()

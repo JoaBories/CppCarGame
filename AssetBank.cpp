@@ -49,6 +49,15 @@ AssetBank::~AssetBank()
         UnloadTexture(*entry.second);
         delete entry.second;
     }
+
+    delete mErrorTexture;
+    delete mStartTexture;
+    delete mCheckpointTexture;
+    delete mObstacleTexture;
+    delete mEditorControlsTexture;
+    delete mCarTexture;
+    delete mSkidMarkTexture;
+
 }
 
 AssetBank* AssetBank::GetInstance()

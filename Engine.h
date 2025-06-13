@@ -17,6 +17,7 @@ private :
 	TileCursor* mTileCursor;
 	Track* mTrack;
 	Car* mCar;
+	Car* mCar2;
 
 	GameState mGameState;
 

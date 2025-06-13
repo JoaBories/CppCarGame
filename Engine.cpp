@@ -8,6 +8,9 @@ void Engine::StartRace()
 	CarControls controls = { KEY_D, KEY_A, KEY_W, KEY_S };
 	mCar = new Car(mTrack->GetTrackObjects()->GetStart().position, {30,60}, mTrack->GetTrackObjects()->GetStart().direction, mTrack, 5, 500, 500, controls);
 
+	controls = { KEY_RIGHT, KEY_LEFT, KEY_UP, KEY_DOWN };
+	mCar2 = new Car(mTrack->GetTrackObjects()->GetStart().position, { 30,60 }, mTrack->GetTrackObjects()->GetStart().direction, mTrack, 5, 500, 500, controls);
+
 	mCar->StartCurrentLap();
 }
 
@@ -15,6 +18,7 @@ Engine::Engine() :
 	mTileCursor{ nullptr },
 	mTrack{ nullptr },
 	mCar{ nullptr },
+	mCar2{ nullptr },
 	mGameState{ StartState },
 	mOrange{ 245, 155, 20, 255 }
 {
@@ -22,6 +26,10 @@ Engine::Engine() :
 
 Engine::~Engine()
 {
+	delete mTileCursor;
+	delete mTrack;
+	delete mCar;
+	delete mCar2;
 }
 
 void Engine::Init()
@@ -61,6 +69,7 @@ void Engine::Update()
 	case RaceState:
 
 		mCar->Update();
+		mCar2->Update();
 
 		Rectangle carRect = { mCar->GetPosition().x, mCar->GetPosition().y, mCar->GetSize().x, mCar->GetSize().y };
 		float carRot = Utils::RotFromVector2(mCar->GetDirection()) + 90;
@@ -130,6 +139,7 @@ void Engine::Draw()
 	case RaceState:
 		mTrack->Draw();
 		mCar->Draw();
+		mCar2->Draw();
 
 		Utils::DrawRectangleCentered({ (float)GetScreenWidth() - 100, 50, 175, 75 }, {0,0,0,100} );
 		Utils::DrawTextCentered("Lap: " + std::to_string(mCar->GetLapCount()), { (float)GetScreenWidth() - 100, 50 }, 40, mOrange);
@@ -148,8 +158,6 @@ void Engine::Draw()
 			string lapTimeText = std::to_string(mCar->GetCurrentLapTime()).substr(0, 4);
 			Utils::DrawTextCentered(lapTimeText + " s", { 100, 50 }, 50, mOrange);
 		}
-
-		
 		
 		break;
 

@@ -9,6 +9,13 @@ Tilemap::Tilemap() :
 
 Tilemap::~Tilemap()
 {
+	for (vector<Tile *> row : mTiles)
+	{
+		for (Tile* tile : row) 
+		{
+			delete tile;
+		}
+	}
 }
 
 Tilemap::Tilemap(int rows, int cols) :
