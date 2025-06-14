@@ -280,3 +280,15 @@ void Utils::DrawRectangleCentered(Rectangle rect, Color color)
 	float yCentered = rect.y - rect.height * 0.5f;
 	DrawRectangle(xCentered, yCentered, rect.width, rect.height, color);
 }
+
+void Utils::DrawTextWithBackground(string text, Vector2 position, float fontSize, Color textColor, Color backgroundColor, int padding)
+{
+	float textWidth = MeasureText(text.c_str(), fontSize);
+	float textHeight = fontSize;
+	float xCentered = position.x - textWidth / 2;
+	float yCentered = position.y - textHeight / 2;
+
+	DrawRectangle(xCentered - padding, yCentered - padding, textWidth + padding * 2, textHeight + padding * 2, backgroundColor);
+
+	DrawText(text.c_str(), xCentered, yCentered, fontSize, textColor);
+}

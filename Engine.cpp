@@ -5,19 +5,67 @@ void Engine::StartRace()
 	mGameState = RaceState;
 	mTrack->LoadTrack();
 
+	Vector2 carSize = { 30, 60 };
+	Vector2 startDir = mTrack->GetTrackObjects()->GetStart().direction;
+
+	Vector2 startPos = Utils::Vector2Add(mTrack->GetTrackObjects()->GetStart().position, {0, carSize.y * 0.5f});
 	CarControls controls = { KEY_D, KEY_A, KEY_W, KEY_S };
-	mCar = new Car(mTrack->GetTrackObjects()->GetStart().position, {30,60}, mTrack->GetTrackObjects()->GetStart().direction, mTrack, 5, 500, 500, controls);
+	mCar1 = new Car(startPos, carSize, startDir , mTrack, 5, 500, 500, controls, 1);
 
+	startPos = Utils::Vector2Substract(mTrack->GetTrackObjects()->GetStart().position, { 0, carSize.y * 0.5f});
 	controls = { KEY_RIGHT, KEY_LEFT, KEY_UP, KEY_DOWN };
-	mCar2 = new Car(mTrack->GetTrackObjects()->GetStart().position, { 30,60 }, mTrack->GetTrackObjects()->GetStart().direction, mTrack, 5, 500, 500, controls);
+	mCar2 = new Car(startPos, carSize, startDir , mTrack, 5, 500, 500, controls, 2);
 
-	mCar->StartCurrentLap();
+	mCar1->StartCurrentLap();
+	mCar2->StartCurrentLap();
+}
+
+void Engine::UpdateCarLap(Car* car)
+{
+	Rectangle carRect = { car->GetPosition().x, car->GetPosition().y, car->GetSize().x, car->GetSize().y };
+	float carRot = Utils::RotFromVector2(car->GetDirection()) + 90;
+
+	if (!car->HasCheckpoint())
+	{
+		Rectangle checkpointRect = { mTrack->GetTrackObjects()->GetCheckpoint().position.x,mTrack->GetTrackObjects()->GetCheckpoint().position.y,mTrack->GetTrackObjects()->GetCheckpoint().size.x,mTrack->GetTrackObjects()->GetCheckpoint().size.y };
+
+		if (Utils::CheckOBB(carRect, carRot, checkpointRect, 0).collision)
+		{
+			car->SetHasCheckpoint(true);
+		}
+	}
+	else
+	{
+		Rectangle checkpointRect = { mTrack->GetTrackObjects()->GetStart().position.x,mTrack->GetTrackObjects()->GetStart().position.y,mTrack->GetTrackObjects()->GetStart().size.x,mTrack->GetTrackObjects()->GetStart().size.y };
+		if (Utils::CheckOBB(carRect, carRot, checkpointRect, 0).collision)
+		{
+			car->FinishLap();
+		}
+	}
+}
+
+void Engine::DrawCarLap(Car* car, Vector2 centerPos, Color textColor, Color backgroundColor)
+{
+	Utils::DrawTextWithBackground("Lap: " + std::to_string(car->GetLapCount()), Utils::Vector2Substract(centerPos, { 0, 60 }), 40, textColor, backgroundColor, 10);
+
+	if (car->GetLapCount() != 0)
+	{
+		string lapTimeText = std::to_string(car->GetCurrentLapTime()).substr(0, 4);
+		Utils::DrawTextWithBackground(lapTimeText + " s", centerPos, 40, textColor, backgroundColor, 10);
+		lapTimeText = std::to_string(car->GetBestLapTime()).substr(0, 4);
+		Utils::DrawTextWithBackground(lapTimeText + " s", Utils::Vector2Add(centerPos, { 0, 60}), 40, textColor, backgroundColor, 10);
+	}
+	else
+	{
+		string lapTimeText = std::to_string(car->GetCurrentLapTime()).substr(0, 4);
+		Utils::DrawTextWithBackground(lapTimeText + " s", centerPos, 40, textColor, backgroundColor, 10);
+	}
 }
 
 Engine::Engine() :
 	mTileCursor{ nullptr },
 	mTrack{ nullptr },
-	mCar{ nullptr },
+	mCar1{ nullptr },
 	mCar2{ nullptr },
 	mGameState{ StartState },
 	mOrange{ 245, 155, 20, 255 }
@@ -28,7 +76,7 @@ Engine::~Engine()
 {
 	delete mTileCursor;
 	delete mTrack;
-	delete mCar;
+	delete mCar1;
 	delete mCar2;
 }
 
@@ -37,7 +85,7 @@ void Engine::Init()
 	mTrack = new Track();
 	mTileCursor = new TileCursor(9, 16, mTrack->GetTilemap()->GetTileSize(), mTrack);
 
-	mCar = nullptr;
+	mCar1 = nullptr;
 }
 
 void Engine::Update()
@@ -68,29 +116,11 @@ void Engine::Update()
 
 	case RaceState:
 
-		mCar->Update();
+		mCar1->Update();
 		mCar2->Update();
 
-		Rectangle carRect = { mCar->GetPosition().x, mCar->GetPosition().y, mCar->GetSize().x, mCar->GetSize().y };
-		float carRot = Utils::RotFromVector2(mCar->GetDirection()) + 90;
-
-		if (!mCar->HasCheckpoint())
-		{
-			Rectangle checkpointRect = {mTrack->GetTrackObjects()->GetCheckpoint().position.x,mTrack->GetTrackObjects()->GetCheckpoint().position.y,mTrack->GetTrackObjects()->GetCheckpoint().size.x,mTrack->GetTrackObjects()->GetCheckpoint().size.y };
-			
-			if (Utils::CheckOBB(carRect, carRot, checkpointRect, 0).collision)
-			{
-				mCar->SetHasCheckpoint(true);
-			}
-		}
-		else
-		{
-			Rectangle checkpointRect = { mTrack->GetTrackObjects()->GetStart().position.x,mTrack->GetTrackObjects()->GetStart().position.y,mTrack->GetTrackObjects()->GetStart().size.x,mTrack->GetTrackObjects()->GetStart().size.y };
-			if (Utils::CheckOBB(carRect, carRot, checkpointRect, 0).collision)
-			{
-				mCar->FinishLap();
-			}
-		}
+		UpdateCarLap(mCar1);
+		UpdateCarLap(mCar2);
 
 		break;
 
@@ -138,26 +168,19 @@ void Engine::Draw()
 
 	case RaceState:
 		mTrack->Draw();
-		mCar->Draw();
+
+		mCar1->DrawSkidMarks();
+		mCar2->DrawSkidMarks();
+
+		mCar1->Draw();
 		mCar2->Draw();
 
-		Utils::DrawRectangleCentered({ (float)GetScreenWidth() - 100, 50, 175, 75 }, {0,0,0,100} );
-		Utils::DrawTextCentered("Lap: " + std::to_string(mCar->GetLapCount()), { (float)GetScreenWidth() - 100, 50 }, 40, mOrange);
+		DrawCarLap(mCar1, { (float)GetScreenWidth() * 0.05f, (float)GetScreenHeight() *0.125f}, mOrange, {0, 0, 0, 100});
+
+		Color tempColor = mOrange;
+		tempColor.a = 100;
+		DrawCarLap(mCar2, { (float)GetScreenWidth() * 0.95f, (float)GetScreenHeight() *0.125f}, { 50, 50, 50, 255 }, tempColor);
 		
-		if (mCar->GetLapCount() != 0)
-		{
-			Utils::DrawRectangleCentered({ 100, 62.5f, 175, 100 }, { 0,0,0,100 });
-			string lapTimeText = std::to_string(mCar->GetCurrentLapTime()).substr(0, 4);
-			Utils::DrawTextCentered(lapTimeText + " s", { 100, 50 }, 50, mOrange);
-			lapTimeText = std::to_string(mCar->GetBestLapTime()).substr(0, 4);
-			Utils::DrawTextCentered(lapTimeText + " s", { 100, 95 }, 30, mOrange);
-		}
-		else
-		{
-			Utils::DrawRectangleCentered({ 100, 50, 175, 75 }, { 0,0,0,100 });
-			string lapTimeText = std::to_string(mCar->GetCurrentLapTime()).substr(0, 4);
-			Utils::DrawTextCentered(lapTimeText + " s", { 100, 50 }, 50, mOrange);
-		}
 		
 		break;
 

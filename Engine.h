@@ -16,7 +16,7 @@ class Engine
 private :
 	TileCursor* mTileCursor;
 	Track* mTrack;
-	Car* mCar;
+	Car* mCar1;
 	Car* mCar2;
 
 	GameState mGameState;
@@ -24,6 +24,9 @@ private :
 	Color mOrange;
 
 	void StartRace();
+
+	void UpdateCarLap(Car* car);
+	void DrawCarLap(Car* car, Vector2 centerPos, Color textColor, Color backgroundColor);
 
 public :
 	Engine();

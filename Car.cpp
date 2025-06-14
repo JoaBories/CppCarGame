@@ -148,6 +148,7 @@ Car::Car() :
 	mMaxFriction{ 0 },
 	mMinFriction{ 0 },
 	mMaxSpeed{ 0 },
+	mNumber{ 0 },
 	mControls{ 0,0,0,0 },
 	mTrackPtr{ nullptr },
 	mHasCheckpoint{ false },
@@ -162,7 +163,7 @@ Car::~Car()
 {
 }
 
-Car::Car(Vector2 position, Vector2 size, Vector2 direction, Track* trackPtr, float turnSpeed, float accel, float maxSpeed, CarControls controls) :
+Car::Car(Vector2 position, Vector2 size, Vector2 direction, Track* trackPtr, float turnSpeed, float accel, float maxSpeed, CarControls controls, int number) :
 	mPosition{ position },
 	mSize{ size },
 	mVelocity{ 0,0 },
@@ -172,6 +173,7 @@ Car::Car(Vector2 position, Vector2 size, Vector2 direction, Track* trackPtr, flo
 	mMaxFriction{ 0.90f },
 	mMinFriction{ 0.99f },
 	mMaxSpeed{ maxSpeed },
+	mNumber{ number },
 	mControls{ controls },
 	mTrackPtr{ trackPtr },
 	mHasCheckpoint{ false },
@@ -252,10 +254,8 @@ void Car::Update()
 
 void Car::Draw() const
 {
-	DrawSkidMarks();
-
 	Rectangle rect = { mPosition.x, mPosition.y, mSize.x, mSize.y };
-	Texture* texture = AssetBank::GetInstance()->GetCarTexture();
+	Texture* texture = AssetBank::GetInstance()->GetCarTexture(mNumber);
 	DrawTexturePro(*texture, { 0, 0, (float)texture->width, (float)texture->height }, rect, { rect.width * 0.5f, rect.height * 0.5f }, Utils::RotFromVector2(mDirection) + 90, WHITE);
 
 	Rectangle carRect = { mPosition.x, mPosition.y, mSize.x, mSize.y };
@@ -264,23 +264,25 @@ void Car::Draw() const
 	float minDistance = Utils::Max(mSize.x, mSize.y) * 3;
 	minDistance *= minDistance;
 
-	for (const auto& obstacle : mTrackPtr->GetTrackObjects()->GetObstacles())
-	{
-		float sqrDistance = Utils::SqrLenght(Utils::Vector2Substract({ mPosition.x, mPosition.y }, obstacle.GetPosition()));
-		if (sqrDistance <= minDistance)
-		{
-			Rectangle obstacleRect = { obstacle.GetPosition().x, obstacle.GetPosition().y, obstacle.GetSize().x, obstacle.GetSize().y };
-
-			OBBCollision result = Utils::CheckOBB(carRect, carRot, obstacleRect, 0);
-
-			if (result.collision)
-			{
-				obstacleRect.x -= obstacleRect.width * 0.5f;
-				obstacleRect.y -= obstacleRect.height * 0.5f;
-				DrawRectangleRec(obstacleRect, { 255, 0, 0, 100 });
-			}
-		}
-	}
+	// =================== Debug Collision Visualization ===================
+	//for (const auto& obstacle : mTrackPtr->GetTrackObjects()->GetObstacles())
+	//{
+	//	float sqrDistance = Utils::SqrLenght(Utils::Vector2Substract({ mPosition.x, mPosition.y }, obstacle.GetPosition()));
+	//	if (sqrDistance <= minDistance)
+	//	{
+	//		Rectangle obstacleRect = { obstacle.GetPosition().x, obstacle.GetPosition().y, obstacle.GetSize().x, obstacle.GetSize().y };
+	//
+	//		OBBCollision result = Utils::CheckOBB(carRect, carRot, obstacleRect, 0);
+	//
+	//		if (result.collision)
+	//		{
+	//			obstacleRect.x -= obstacleRect.width * 0.5f;
+	//			obstacleRect.y -= obstacleRect.height * 0.5f;
+	//			DrawRectangleRec(obstacleRect, { 255, 0, 0, 100 });
+	//		}
+	//	}
+	//}
+	// =======================================================================
 }
 
 Vector2 Car::GetPosition() const

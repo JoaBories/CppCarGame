@@ -25,7 +25,8 @@ AssetBank::AssetBank()
 	mCheckpointTexture = LoadTextureFromSource("resources/img/checkpoint.png");
 	mObstacleTexture = LoadTextureFromSource("resources/img/obstacle.png");
 	mEditorControlsTexture = LoadTextureFromSource("resources/img/editor_controls.png");
-	mCarTexture = LoadTextureFromSource("resources/img/car_1.png");
+	mCar1Texture = LoadTextureFromSource("resources/img/car_1.png");
+	mCar2Texture = LoadTextureFromSource("resources/img/car_2.png");
 
 	mSkidMarkTexture = LoadTextureFromSource("resources/img/skid_mark.png");
 
@@ -55,7 +56,7 @@ AssetBank::~AssetBank()
     delete mCheckpointTexture;
     delete mObstacleTexture;
     delete mEditorControlsTexture;
-    delete mCarTexture;
+    delete mCar1Texture;
     delete mSkidMarkTexture;
 
 }
@@ -100,9 +101,20 @@ Texture* AssetBank::GetEditorControlsTexture() const
 	return mEditorControlsTexture;
 }
 
-Texture* AssetBank::GetCarTexture() const
+Texture* AssetBank::GetCarTexture(int number) const
 {
-	return mCarTexture;
+    switch (number)
+    {
+        case 1:
+			return mCar1Texture;
+			break;
+        case 2:
+            return mCar2Texture;
+			break;
+        default:
+			return mErrorTexture;
+            break;
+    }
 }
 
 Texture* AssetBank::GetSkidMarkTexture() const

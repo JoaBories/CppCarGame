@@ -36,6 +36,8 @@ private:
 	float mMinFriction;
 	float mMaxSpeed;
 
+	int mNumber;
+
 	bool mHasCheckpoint;
 	int mLapCount;
 	float mBestLapTime;
@@ -54,16 +56,17 @@ private:
 	void SpawnSkidMark();
 
 	void UpdateSkidMarks();
-	void DrawSkidMarks() const;
+	
 
 public:
 	Car();
 	~Car();
 
-	Car(Vector2 position, Vector2 size, Vector2 direction, Track* trackPtr, float turnSpeed, float accel, float maxSpeed, CarControls controls);
+	Car(Vector2 position, Vector2 size, Vector2 direction, Track* trackPtr, float turnSpeed, float accel, float maxSpeed, CarControls controls, int number);
 
 	void Update();
 	void Draw() const;
+	void DrawSkidMarks() const;
 
 	Vector2 GetPosition() const;
 	Vector2 GetSize() const;
