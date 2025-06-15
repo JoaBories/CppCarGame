@@ -8,7 +8,8 @@ enum GameState
 {
 	StartState,
 	EditorState,
-	RaceState
+	RaceState,
+	FinishState
 };
 
 class Engine

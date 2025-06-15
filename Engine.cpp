@@ -122,8 +122,23 @@ void Engine::Update()
 		UpdateCarLap(mCar1);
 		UpdateCarLap(mCar2);
 
+		if (mCar1->GetLapCount() == 10 || mCar2->GetLapCount() == 10)
+		{
+			mGameState = FinishState;
+		}
+
 		break;
 
+	case FinishState:
+		if (IsKeyPressed(KEY_ENTER))
+		{
+			mGameState = StartState;
+			delete mCar1;
+			delete mCar2;
+			mCar1 = nullptr;
+			mCar2 = nullptr;
+		}
+		break;
 	}
 }
 
@@ -182,6 +197,39 @@ void Engine::Draw()
 		DrawCarLap(mCar2, { (float)GetScreenWidth() * 0.95f, (float)GetScreenHeight() *0.125f}, { 50, 50, 50, 255 }, tempColor);
 		
 		
+		break;
+
+	case FinishState:
+
+		Utils::DrawTextWithBackground("Lap Count", { (float)GetScreenWidth() * 0.2f, (float)GetScreenHeight() * 0.15f }, 40, mOrange, { 0, 0, 0, 100 }, 10);
+		Utils::DrawTextWithBackground(std::to_string(mCar1->GetLapCount()), { (float)GetScreenWidth() * 0.2f, (float)GetScreenHeight() * 0.25f }, 40, mOrange, { 0, 0, 0, 100 }, 10);
+		Utils::DrawTextWithBackground("Lap Count", { (float)GetScreenWidth() * 0.8f, (float)GetScreenHeight() * 0.15f }, 40, mOrange, { 0, 0, 0, 100 }, 10);
+		Utils::DrawTextWithBackground(std::to_string(mCar2->GetLapCount()), { (float)GetScreenWidth() * 0.8f, (float)GetScreenHeight() * 0.25f }, 40, mOrange, { 0, 0, 0, 100 }, 10);
+
+		Utils::DrawTextWithBackground("Best Lap Time", { (float)GetScreenWidth() * 0.2f, (float)GetScreenHeight() * 0.4f }, 40, mOrange, { 0, 0, 0, 100 }, 10);
+		if (mCar1->GetLapCount() == 0)
+		{
+			Utils::DrawTextWithBackground("NaN", { (float)GetScreenWidth() * 0.2f, (float)GetScreenHeight() * 0.5f }, 40, mOrange, { 0, 0, 0, 100 }, 10);
+		}
+		else
+		{
+			string lapTimeText = std::to_string(mCar1->GetBestLapTime()).substr(0, 4);
+			Utils::DrawTextWithBackground(lapTimeText, { (float)GetScreenWidth() * 0.2f, (float)GetScreenHeight() * 0.5f }, 40, mOrange, { 0, 0, 0, 100 }, 10);
+		}
+		
+		Utils::DrawTextWithBackground("Best Lap Time", { (float)GetScreenWidth() * 0.8f, (float)GetScreenHeight() * 0.4f }, 40, mOrange, { 0, 0, 0, 100 }, 10);
+		if (mCar2->GetLapCount() == 0)
+		{
+			Utils::DrawTextWithBackground("NaN", { (float)GetScreenWidth() * 0.8f, (float)GetScreenHeight() * 0.5f }, 40, mOrange, { 0, 0, 0, 100 }, 10);
+		}
+		else 
+		{
+			string lapTimeText = std::to_string(mCar1->GetBestLapTime()).substr(0, 4);
+			Utils::DrawTextWithBackground(lapTimeText, { (float)GetScreenWidth() * 0.2f, (float)GetScreenHeight() * 0.5f }, 40, mOrange, { 0, 0, 0, 100 }, 10);
+		}
+		
+		Utils::DrawTextCentered("Press Enter to return to menu", { (float)GetScreenWidth() * 0.5f, (float)GetScreenHeight() * 0.8f }, 20, mOrange);
+
 		break;
 
 	}
